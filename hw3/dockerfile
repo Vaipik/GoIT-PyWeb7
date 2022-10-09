@@ -1,0 +1,11 @@
+FROM python:latest
+
+MAINTAINER Nickita "n.khylko@gmail.com"
+
+COPY . /CLI_helper
+
+WORKDIR /CLI_helper
+
+RUN pip install pipenv
+RUN pipenv install --deploy --ignore-pipfile
+CMD ["pipenv", "run", "helper"]
