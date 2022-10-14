@@ -1,7 +1,7 @@
 from pathlib import Path
 import shutil
 from typing import Union
-from threading import Thread
+from threading import Thread, RLock
 
 from normalization import normalize
 from logger import logged
@@ -15,6 +15,8 @@ FILES_EXTENSIONS = {
     ("ZIP", "GZ", "TAR"): "archives",
     "": 'unknown'
 }
+
+LOCK = RLock()
 
 
 def create_folders(base_path: Path) -> None:
@@ -40,14 +42,15 @@ def delete_folders(base_path: Path) -> None:
 
 
 @logged
-def file_replacement(base_path: Path, file: Path) -> None:
+def file_replacement(lock: RLock, base_path: Path, file: Path) -> None:
     """
-
-    :param base_path:
-    :param file:
-    :return:
+    This function is started in new thread
+    :param lock: is used to lock thread until file will be replaced
+    :param base_path: base directory path
+    :param file: file path
+    :return: None
     """
-
+    lock.acquire()
     file_name = normalize(file.stem)  # Cyrillic -> latin
     folder_name = FILES_EXTENSIONS.get(
         get_extensions(file.suffix[1:]), 'unknown')
@@ -59,6 +62,7 @@ def file_replacement(base_path: Path, file: Path) -> None:
     else:
         file_name += file.suffix
         file.replace(folder_to.joinpath(file_name))
+    lock.release()
 
 
 def get_extensions(extension: str) -> Union[tuple, str]:
@@ -73,12 +77,16 @@ def get_extensions(extension: str) -> Union[tuple, str]:
 
 @logged
 def iterdir(base_path: Path, path: Path) -> None:
-
+    """
+    This function is starting new thread for iterating directory
+    :param base_path: base directory
+    :param path: current directory
+    :return: None
+    """
     for elem in path.iterdir():
 
         if elem.is_file():
-            Thread(target=file_replacement, args=(base_path, elem)).start()
-
+            Thread(target=file_replacement, args=(LOCK, base_path, elem)).start()
         else:
             parse_folder(elem, base_path)
 
@@ -91,13 +99,12 @@ def parse_folder(path: Path, base_path: Path = None) -> None:
     :param base_path: given path entered by user
     :return: None
     """
+
     if base_path is None:
         base_path = path
 
     if path.is_dir():
         Thread(target=iterdir, args=(base_path, path)).start()
-    else:
-        parse_folder(path)
 
 
 @logged

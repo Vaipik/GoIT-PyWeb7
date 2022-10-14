@@ -24,7 +24,7 @@ def logged(func=None, *_, level=logging.DEBUG, name: str = None):
         except Exception as e:
             logger.log(level=logging.ERROR, msg=e)
         else:
-            log_message = f"{func.__name__} done in {time() - start_time}, result={result}"
+            log_message = f"{func.__name__} done in {time() - start_time}"
             logger.log(level, log_message)
             return result
 
