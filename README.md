@@ -1,6 +1,8 @@
 <h3>GoIT Python Web 7</h3>
-<ul>
+<ol>
     <li>hw1 metaclass and serialization interface</li>
     <li>UML diagram and abstract interfaces for CLI helper</li>
     <li>docker container with pipenv</li>
-</ul>
+    <li>file sorter with threadings</li>
+    <li>multiprocessing</li>
+</ol>
