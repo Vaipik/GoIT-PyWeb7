@@ -1,43 +1,32 @@
 import concurrent.futures
-from multiprocessing import Process, JoinableQueue, Manager, Pool
-from time import sleep
+import logging
+from multiprocessing import Process, Queue, JoinableQueue, Manager, Pool
+from random import randint
+from time import time, sleep
 from typing import List
 import sys
 
 from logger import logged
 
 
+NUMBERS = [randint(1, 1000000) for _ in range(400)]
+
+
 @logged(message='[max number]')
-def factorize(number):
+def factorize_max(number):
     return [num for num in range(1, number + 1) if number % num == 0]
 
 
-a = factorize(10651060)
-sleep(1)
-
-
 @logged(message='[sync]')
-def factorize(*number) -> List[List[int]]:
+def factorize_sync(*number) -> List[List[int]]:
     return [[i for i in range(1, arg + 1) if arg % i == 0] for arg in number]
 
 
-a, b, c, d = factorize(128, 255, 99999, 10651060)
-
-assert a == [1, 2, 4, 8, 16, 32, 64, 128]
-assert b == [1, 3, 5, 15, 17, 51, 85, 255]
-assert c == [1, 3, 9, 41, 123, 271, 369, 813, 2439, 11111, 33333, 99999]
-assert d == [
-    1, 2, 4, 5, 7, 10, 14, 20, 28, 35, 70, 140, 76079, 152158, 304316,
-    380395, 532553, 760790, 1065106, 1521580, 2130212, 2662765, 5325530,
-    10651060
-    ]
-
-sleep(1)
 manager_dict = Manager().dict()
 
 
 @logged(message='[multipocessing manager outside factorize]')
-def factorize(*number):
+def factorize_man_out(*number):
 
     def slave(num: int, mng_dict):
 
@@ -51,12 +40,8 @@ def factorize(*number):
     return dict(manager_dict).values()  # !!!!!! dict(manager_dict) !!!!!!
 
 
-a, b, c, d = factorize(128, 255, 99999, 10651060)
-sleep(1)
-
-
 @logged(message='[multipocessing manager inside factorize]')
-def factorize(*number):
+def factorize_man_in(*number):
 
     mng_dict = Manager().dict()
 
@@ -72,20 +57,26 @@ def factorize(*number):
     return dict(mng_dict).values()  # !!!!!! dict(manager_dict) !!!!!!
 
 
-a, b, c, d = factorize(128, 255, 99999, 10651060)
-sleep(1)
-assert a == [1, 2, 4, 8, 16, 32, 64, 128]
-assert b == [1, 3, 5, 15, 17, 51, 85, 255]
-assert c == [1, 3, 9, 41, 123, 271, 369, 813, 2439, 11111, 33333, 99999]
-assert d == [
-    1, 2, 4, 5, 7, 10, 14, 20, 28, 35, 70, 140, 76079, 152158, 304316,
-    380395, 532553, 760790, 1065106, 1521580, 2130212, 2662765, 5325530,
-    10651060
-    ]
+@logged(message='[multiprocessing queue]')
+def factorize_q(*number):
+
+    queue = Queue()
+
+    def slave(q: Queue):
+        num = q.get()
+        manager_dict[num] = [i for i in range(1, num + 1) if num % i == 0]
+        sys.exit(0)
+
+    workers = [Process(target=slave, args=(queue, )) for _ in number]
+    [worker.start() for worker in workers]
+    [queue.put(num) for num in number]
+    [worker.join() for worker in workers]
+
+    return dict(manager_dict).values()
 
 
 @logged(message='[multiprocessing joinable queue]')
-def factorize(*number):
+def factorize_jq(*number):
 
     queue = JoinableQueue()
 
@@ -101,27 +92,38 @@ def factorize(*number):
     return dict(manager_dict).values()
 
 
-factorize(128, 255, 99999, 10651060)
-sleep(1)
-
-
-@logged(message='[multiprocessing with pool]')
 def factorize(number) -> List[int]:
     return [i for i in range(1, number + 1) if number % i == 0]
 
 
-pool = Pool(processes=4)
+if __name__ == '__main__':
 
-a, b, c, d = pool.map(factorize, [128, 255, 99999, 10651060])
-sleep(1)
-assert a == [1, 2, 4, 8, 16, 32, 64, 128]
-assert b == [1, 3, 5, 15, 17, 51, 85, 255]
-assert c == [1, 3, 9, 41, 123, 271, 369, 813, 2439, 11111, 33333, 99999]
-assert d == [
-    1, 2, 4, 5, 7, 10, 14, 20, 28, 35, 70, 140, 76079, 152158, 304316,
-    380395, 532553, 760790, 1065106, 1521580, 2130212, 2662765, 5325530,
-    10651060
-    ]
+    factorize_max(max(NUMBERS))
+    sleep(1)
 
-with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
-    a, b, c, d = executor.map(factorize, [128, 255, 99999, 10651060])
+    factorize_sync(*NUMBERS)
+    sleep(1)
+
+    factorize_man_out(*NUMBERS)
+    sleep(1)
+
+    factorize_man_in(*NUMBERS)
+    sleep(1)
+
+    factorize_q(*NUMBERS)
+    sleep(1)
+
+    factorize_jq(*NUMBERS)
+    sleep(1)
+
+    start_time = time()
+    pool = Pool(processes=4)
+
+    pool.map(factorize, NUMBERS)
+    logging.log(level=logging.DEBUG, msg=f"[multiprocessing pool] done in {time() - start_time}")
+    sleep(1)
+
+    start_time = time()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        executor.map(factorize, NUMBERS)
+    logging.log(level=logging.DEBUG, msg=f"[multiprocessing PoolExecutor] done in {time() - start_time}")
