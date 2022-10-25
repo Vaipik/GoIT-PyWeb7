@@ -5,4 +5,5 @@
     <li>docker container with pipenv</li>
     <li>file sorter with threadings</li>
     <li>multiprocessing</li>
+    <li>file sorter by using asyncio</li>
 </ol>
