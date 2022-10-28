@@ -6,4 +6,5 @@
     <li>file sorter with threadings</li>
     <li>multiprocessing</li>
     <li>file sorter by using asyncio</li>
+    <li>simple texting in network by using socket module</li>
 </ol>
