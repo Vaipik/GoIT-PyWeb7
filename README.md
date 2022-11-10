@@ -7,4 +7,5 @@
     <li>multiprocessing</li>
     <li>file sorter by using asyncio</li>
     <li>simple texting in network by using socket module</li>
+    <li>One course database with random filling and raw sql queries by using sqlite3</li> 
 </ol>
