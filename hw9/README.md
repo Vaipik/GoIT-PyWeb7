@@ -18,9 +18,9 @@
 </ol>
 <h4>And you are able to operate with notebook commands:</h4>
 <ol>
-    <li>new note <title> to start adding note.</li>
-    <li><edit note <title> to start editing note/li>
-    <li>find note <query> to start search in your notebook</li>
-    <li>show note <title> to exact note.</li>
+    <li>new note [title] to start adding note.</li>
+    <li>edit note [title] to start editing note</li>
+    <li>find note [query] to start search in your notebook</li>
+    <li>show note [title] to exact note.</li>
     <li>show notes to show all titles</li>
 </ol>
