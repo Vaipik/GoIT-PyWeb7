@@ -26,6 +26,7 @@ class RecordBook(db.Model):
     book_name = db.Column(db.String(50), index=True, nullable=False)
     username_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="record_book")
+    record = db.relationship("Record", back_populates="book", cascade="all, delete-orphan")
 
 
 class NoteBook(db.Model):
@@ -35,6 +36,36 @@ class NoteBook(db.Model):
     book_name = db.Column(db.String(50), index=True, nullable=False)
     username_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="note_book")
+
+
+class Record(db.Model):
+    __tablename__ = "records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), index=True, nullable=False)
+    birthday = db.Column(db.Date, default=None, nullable=True)
+    book_id = db.Column(db.Integer, db.ForeignKey("record_books.id"))
+    book = db.relationship("RecordBook", back_populates="book")
+    phones = db.relationship("Phone", back_populates="record")
+    emails = db.relationship("email", back_populates="record")
+
+
+class Phone(db.Model):
+    __tablename__ = "phones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.String(50), index=True, nullable=True)
+    record_id = db.Column(db.Integer, db.ForeignKey("records.id"))
+    record = db.relationship("Record", back_populates="phones")
+
+
+class Email(db.Model):
+    __tablename__ = "emails"
+
+    id = db.Column(db.Integer, primary_key=True)
+    address = db.Column(db.String(50), index=True, nullable=True)
+    record_id = db.Column(db.Integer, db.ForeignKey("records.id"))
+    record = db.relationship("Record", back_populates="emails")
 
 
 @login.user_loader

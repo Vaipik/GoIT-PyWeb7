@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 
 from . import db
 from .forms import LoginForm, RegistrationForm
-from .models import User, RecordBook
+from .models import User, RecordBook, NoteBook
 
 
 @app.route("/")
@@ -12,12 +12,11 @@ from .models import User, RecordBook
 @login_required
 def index():
 
-    user = {
-        "username": "Nickita",
-    }
+    if current_user.is_authenticated:
+        return redirect(url_for("profile", username=current_user.username))
+
     return render_template(
         template_name_or_list="index.html",
-        user=user,
     )
 
 

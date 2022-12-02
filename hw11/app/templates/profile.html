@@ -7,7 +7,13 @@
 <h3>You record books is:</h3>
 <ul>
   {% for book in record_books %}
-  <li><a href="#">{{ book.book_name }}</a></li>
+    {% include "_books.html" %}
+  {% endfor %}
+</ul>
+<h3>You notebooks is:</h3>
+<ul>
+  {% for book in note_books %}
+    {% include "_books.html" %}
   {% endfor %}
 </ul>
 {% endblock %}
