@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h3>Hello {{ user.username }}</h3>
+<h4>Password is {{ user.password }}</h4>
+<h3>You record books is:</h3>
+<ul>
+  {% for book in record_books %}
+  <li><a href="#">{{ book.book_name }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
