@@ -45,9 +45,9 @@ class Record(db.Model):
     name = db.Column(db.String(50), index=True, nullable=False)
     birthday = db.Column(db.Date, default=None, nullable=True)
     book_id = db.Column(db.Integer, db.ForeignKey("record_books.id"))
-    book = db.relationship("RecordBook", back_populates="book")
+    book = db.relationship("RecordBook", back_populates="record")
     phones = db.relationship("Phone", back_populates="record")
-    emails = db.relationship("email", back_populates="record")
+    emails = db.relationship("Email", back_populates="record")
 
 
 class Phone(db.Model):
