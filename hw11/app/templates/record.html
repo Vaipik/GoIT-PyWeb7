@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>Information about {{ record.name }}</h3>
+
+{{ record.birthday }}
+
+<h4>Phones:</h4>
+<ul>
+  {% for phone in record.phones %}
+    <li>{{ phone.value }}</li>
+  {% endfor %}
+</ul>
+
+<h4>Emails:</h4>
+<ul>
+  {% for email in record.emails %}
+    <li>{{ email.value }}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

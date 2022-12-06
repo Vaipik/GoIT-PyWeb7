@@ -1,54 +1,32 @@
 {% extends 'base.html' %}
-
+{% from '_record_fields.html' import show_form_fields %}
 {% block content %}
-<h3>New record for <i>{{ book }}</i> book</h3>
 
-<form action="{{ url_for('new_record', book=book) }}" method="post" novalidate>
+<h3>New record for <i>{{ book.title }}</i> book</h3>
+
+<form action="{{ url_for('new_record', title=book.title) }}" method="post" novalidate>
   {{ form.hidden_tag() }}
   <p>
     {{ form.name.label }}<br>
-    {{ form.name(size=32) }}<br>
+    {{ form.name(size=32, placeholder="Enter contact name in this field") }}<br>
     {% for error in form.name.errors %}
-      <span style="color: red;">{{ error }}</span>
+    <span style="color: red;">{{ error }}</span>
     {% endfor %}
-  </p>
+  <hr>
+
   <p>
     {{ form.birthday.label }}<br>
     {{ form.birthday(size=32) }}<br>
     {% for error in form.birthday.errors %}
-      <span style="color: red;">{{ error }}</span>
+    <span style="color: red;">{{ error }}</span>
     {% endfor %}
-  </p>
-  <p>
-    {% for phone in form.phones %}
-      {{ phone.hidden_tag() }}
-      {{ phone.label }}<br>
-      {{ phone(size=32) }}<br>
-      {% if loop.last %}
+  <hr>
 
-        {{ form.new_phone }}
-      {% endif %}
-      {% for error in phone.errors %}
-        <span style="color: red;">{{ error }}</span>
-      {% endfor %}
-  {% endfor %}
-  </p>
-  <p>
-    {% for email in form.emails %}
-      {{ email.hidden_tag() }}
-      {{ email.label }}<br>
-      {{ email(size=32) }}<br>
-      {% if loop.last %}
-        {{ form.new_email }}
-      {% endif %}
-      {% for error in email.errors %}
-        <span style="color: red;">{{ error }}</span>
-      {% endfor %}
-
-  {% endfor %}
-  </p>
+  <div>{{ show_form_fields(field_form=form.phones, placeholder="Enter phone number", button_type=form.new_phone) }}</div>
+  <div>{{ show_form_fields(field_form=form.emails, placeholder="Enter email address", button_type=form.new_email) }}</div>
   <p>{{ form.submit }}</p>
 
 </form>
+
 
 {% endblock %}

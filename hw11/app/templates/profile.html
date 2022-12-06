@@ -7,7 +7,7 @@
 <h3>You record books is:</h3>
 <ul>
   {% for book in record_books %}
-    <li><a href="{{ url_for('record_book', username=user.username, book=book.book_name) }} ">{{ book.book_name }}</a></li>
+    <li><a href="{{ url_for('record_book', title=book.title, book=book) }} ">{{ book.title }}</a></li>
   {% endfor %}
   <p><a href="{{ url_for('new_record_book') }} ">New record book</a></p>
 </ul>
@@ -15,7 +15,7 @@
 <h3>You notebooks is:</h3>
 <ul>
   {% for book in note_books %}
-    <li><a href="{{ url_for('note_book', username=user.username, book=book.book_name) }} ">{{ book.book_name }}</a></li>
+    <li><a href="{{ url_for('note_book',book=book.title) }} ">{{ book.title }}</a></li>
   {% endfor %}
 </ul>
 {% endblock %}

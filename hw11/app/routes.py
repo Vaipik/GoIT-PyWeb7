@@ -1,10 +1,12 @@
 from flask import current_app as app
 from flask import request, render_template, redirect, flash, url_for
 from flask_login import current_user, login_user, logout_user, login_required
+from sqlalchemy.orm import joinedload
 
 from . import db
 from .forms import LoginForm, RegistrationForm, NewRecordBookForm, NewRecordForm
-from .models import User, RecordBook, NoteBook, Record
+from .models import User, RecordBook, NoteBook
+from . import crud
 
 
 @app.route("/")
@@ -89,15 +91,25 @@ def register():
     )
 
 
-@app.route("/<string:book>/new_record", methods=["GET", "POST"])
-def new_record(book):
+@app.route("/<string:title>/new_record", methods=["GET", "POST"])
+def new_record(title):
+
+    book = crud.read_record_book(title=title, user=current_user)
 
     form = NewRecordForm()
     if form.validate_on_submit():
         form.update_self()
 
-    else:
-        print("not valid")
+        if form.submit.data:
+            crud.create_record(form=form, title=title, user=current_user)
+
+            return redirect(
+                url_for(
+                    endpoint="record_book",
+                    title=title
+                )
+            )
+
     return render_template(
         template_name_or_list="new_record.html",
         book=book,
@@ -111,18 +123,12 @@ def new_record_book():
 
     form = NewRecordBookForm()
     if form.validate_on_submit():
-        book = RecordBook(
-            book_name=form.book_name.data,
-            user=current_user
-        )
-        db.session.add(book)
-        db.session.commit()
-        flash(f"{form.book_name.data} has been created")
+        crud.create_record_book(form=form, user=current_user)
+        flash(f"{form.title.data} has been created")
         return redirect(
             url_for(
                 endpoint="record_book",
-                username=current_user.username,
-                book=form.book_name.data
+                title=form.title.data
             )
         )
 
@@ -133,13 +139,24 @@ def new_record_book():
     )
 
 
-@app.route("/profile/<string:username>/record_book/<string:book>")
+@app.route("/profile/record_book/<string:title>")
 @login_required
-def record_book(username, book):
-    book = RecordBook.query.filter_by(book_name=book).first()
+def record_book(title, **kwargs):
+    book = crud.read_record_book(title, current_user)
+
     return render_template(
         template_name_or_list="record_book.html",
         book=book,
+    )
+
+
+@app.route("/profile/<string:title>/<string:record_name>", methods=["GET"])
+@login_required
+def show_record(title, record_name):
+    record = crud.read_record(title=title, user=current_user, record_name=record_name)
+    return render_template(
+        template_name_or_list="record.html",
+        record=record
     )
 
 

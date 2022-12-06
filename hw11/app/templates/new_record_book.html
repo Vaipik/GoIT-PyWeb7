@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>New record book creatio</h2>
+<h2>New record book creation</h2>
 <form action="{{ url_for('new_record_book') }}" method="post">
   {{ form.hidden_tag() }}
   <p>
-    {{ form.book_name.label }}<br>
-    {{ form.book_name(size=32) }}<br>
-    {% for error in form.book_name.errors %}
+    {{ form.title.label }}<br>
+    {{ form.title(size=32, placeholder="Enter record book name in this field") }}<br>
+    {% for error in form.title.errors %}
     <span style="color: red;">{{ error }}</span>
     {% endfor %}
   </p>

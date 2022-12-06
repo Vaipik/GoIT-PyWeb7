@@ -1,0 +1,16 @@
+{% macro show_form_fields(field_form, placeholder, button_type) %}
+{% for item in field_form %}
+    <p>
+      {{ item.form.hidden_tag() }}
+      {{ item.form.field(placeholder=placeholder) }}<br>
+      {% for error in item.form.field.errors %}
+        <span style="color: red;">{{ error }}</span>
+      {% endfor %}
+      {% if loop.last %}
+        <p>{{ button_type }}</p>
+      {% endif %}
+  {% endfor %}
+  <hr>
+
+{% endmacro %}
+

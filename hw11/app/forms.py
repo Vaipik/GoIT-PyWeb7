@@ -1,10 +1,13 @@
 import re
 
+from flask_login import current_user
 from flask_wtf import FlaskForm
+from sqlalchemy.orm import joinedload
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, FieldList, Form, FormField, DateField
 from wtforms.validators import ValidationError, EqualTo, DataRequired, Optional, Length, InputRequired
 
-from .models import User, RecordBook
+from .models import User
+from . import crud
 
 
 class LoginForm(FlaskForm):
@@ -30,46 +33,48 @@ class RegistrationForm(FlaskForm):
 
 class NewRecordBookForm(FlaskForm):
 
-    book_name = StringField("Record book name", validators=[DataRequired(message="Enter book name")])
+    title = StringField("Record book name", validators=[DataRequired(message="Enter book name")])
     submit = SubmitField("Create")
 
-    def validate_book_name(self, book_name):
-        book = User.query.filter_by(book_name=book_name).first()
-        if book is not None:
-            raise ValidationError("Record book already exists. Try another ")
+    def validate_title(self, title):
+        book_title = title.data
+        book = crud.read_record_book(book_title, current_user)
+        # print(book)
+        if book:
+            raise ValidationError(f"Book with title {book_title} already exists.")
 
 
 class PhoneForm(FlaskForm):
-    number = StringField("number", validators=[DataRequired()])
+    field = StringField("phone number", description="0123456789", validators=[Optional(strip_whitespace=False)])
 
-    def validate_number(self, number):
-        num = number.data
-        print(num)
-        if num is None:
-            print(f"{num} not valid - empty")
+    def validate_field(self, field):
+        number = field.data
+        if number is None:
             raise ValidationError("You forgot to enter the number")
-        if len(num) != 10 and not num.isdigit():
-            print(f"{num} not valid - not number")
+        if len(number) != 10:
             raise ValidationError("Number must be 10 digits.")
+        if not number.isdigit():
+            raise ValidationError("Number must contain only digits")
 
 
 class EmailForm(FlaskForm):
-    email = StringField("email", validators=[Optional(strip_whitespace=False)])
+    field = StringField("email", description="example@mail.com", validators=[Optional(strip_whitespace=False)])
 
-    def validate_email(self, email):
+    def validate_field(self, field):
+        email = field.data
         __pattern = r"^[a-zA-Z][\w.]{1,}@([a-zA-Z]{2,}[.][a-zA-Z]{2,}|[a-zA-Z]{2,}[.][a-zA-Z]{2,}[.][a-zA-Z]{2,})$"
-        if email.data is None:
+        if email is None:
             raise ValidationError("You forgot to enter the number")
-        if not re.match(__pattern, email.data):
+        if not re.match(__pattern, email):
             raise ValidationError("Wrong email. Try again.")
 
 
 class NewRecordForm(FlaskForm):
 
-    name = StringField("Contact name", validators=[DataRequired(message="Enter contact name")])
+    name = StringField("Contact name", description="Enter name in this field", validators=[DataRequired(message="Enter contact name")])
     birthday = DateField("Birthday", validators=[Optional()])
-    phones = FieldList(FormField(PhoneForm), min_entries=1, max_entries=5, validators=[Optional(strip_whitespace=False)])
-    emails = FieldList(FormField(EmailForm), min_entries=1, max_entries=5, validators=[Optional(strip_whitespace=False)])
+    phones = FieldList(FormField(PhoneForm, label="Phone number"), min_entries=1, max_entries=5)
+    emails = FieldList(FormField(EmailForm), min_entries=1, max_entries=5)
     submit = SubmitField("Add new record")
     new_phone = SubmitField("Add new phone")
     new_email = SubmitField("Add new email")
@@ -78,15 +83,25 @@ class NewRecordForm(FlaskForm):
 
         read_form_data = self.data
 
-        if read_form_data['new_phone']:
-            new_phone = read_form_data['phones']
-            new_phone.append({})
-            read_form_data['phones'] = new_phone
+        if read_form_data["new_phone"]:
+            print("WTF")
+            phones: list = read_form_data["phones"]
+            new_phone = phones[-1].get("field")
+            if len(new_phone) != 10 and not new_phone.isdigit():
+                phones.pop()  # if not validated do not add new field
+            else:
+                phones.append({})
+            read_form_data["phones"] = phones
 
         if read_form_data['new_email']:
-            new_email = read_form_data['emails']
-            new_email.append({})
-            read_form_data['emails'] = new_email
+            emails: list = read_form_data['emails']
+            new_email = emails[-1].get("field")
+            __pattern = r"^[a-zA-Z][\w.]{1,}@([a-zA-Z]{2,}[.][a-zA-Z]{2,}|[a-zA-Z]{2,}[.][a-zA-Z]{2,}[.][a-zA-Z]{2,})$"
+            if re.match(__pattern, new_email):
+                emails.append({})  # if not validated do not add new field
+            else:
+                emails.pop()
+            read_form_data["emails"] = emails
 
         self.__init__(formdata=None, **read_form_data)  # reload the form from modified data
         self.validate()

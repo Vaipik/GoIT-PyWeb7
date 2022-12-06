@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if book.records %}
-  <h3>Your records in {{ book.book_name }} is:</h3>
+{% if book.record %}
+  <h3>Your records in {{ book.title }} is:</h3>
   <ul>
-    {% for record in records %}
-    <li><a href="{{ url_for('record', record_name=record.name) }}">{{ record.name }}</a></li>
+    {% for record in book.record %}
+      <li><a href="{{ url_for('show_record', title=book.title, record_name=record.name) }}">{{ record.name }}</a></li>
     {% endfor %}
-    <p><a href="{{ url_for('new_record', book=book.book_name) }} ">New record</a></p>
   </ul>
 {% else %}
-  <h3>No records in {{ book.book_name }} book</h3>
-  <p><a href="{{ url_for('new_record', book=book.book_name) }} ">New record</a></p>
+  <h3>No records in {{ book.title }} book</h3>
 {% endif %}
+  <p><a href="{{ url_for('new_record', title=book.title) }} ">New record</a></p>
 {% endblock %}

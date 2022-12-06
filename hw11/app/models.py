@@ -23,7 +23,7 @@ class RecordBook(db.Model):
     __tablename__ = "record_books"
 
     id = db.Column(db.Integer, primary_key=True)
-    book_name = db.Column(db.String(50), index=True, nullable=False)
+    title = db.Column(db.String(50), index=True, nullable=False, unique=False)
     username_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="record_book")
     record = db.relationship("Record", back_populates="book", cascade="all, delete-orphan")
@@ -33,9 +33,10 @@ class NoteBook(db.Model):
     __tablename__ = "note_books"
 
     id = db.Column(db.Integer, primary_key=True)
-    book_name = db.Column(db.String(50), index=True, nullable=False)
+    title = db.Column(db.String(50), index=True, nullable=False, unique=False)
     username_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="note_book")
+    note = db.relationship("Note", back_populates="book", cascade="all, delete-orphan")
 
 
 class Record(db.Model):
@@ -54,7 +55,7 @@ class Phone(db.Model):
     __tablename__ = "phones"
 
     id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.String(50), index=True, nullable=True)
+    value = db.Column(db.String(50), index=True, nullable=True)
     record_id = db.Column(db.Integer, db.ForeignKey("records.id"))
     record = db.relationship("Record", back_populates="phones")
 
@@ -63,9 +64,40 @@ class Email(db.Model):
     __tablename__ = "emails"
 
     id = db.Column(db.Integer, primary_key=True)
-    address = db.Column(db.String(50), index=True, nullable=True)
+    value = db.Column(db.String(50), index=True, nullable=True)
     record_id = db.Column(db.Integer, db.ForeignKey("records.id"))
     record = db.relationship("Record", back_populates="emails")
+
+
+class Note(db.Model):
+    __tablename__ = "notes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    note_title = db.Column(db.String(100), index=True, nullable=False)
+    text = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    edited_at = db.Column(db.DateTime, nullable=False, default=None)
+    book_id = db.Column(db.Integer, db.ForeignKey("note_books.id"))
+    book = db.relationship("NoteBook", back_populates="note")
+    tags = db.relationship("Tag", secondary="note_tags", back_populates="notes")
+
+
+class Tag(db.Model):
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+    notes = db.relationship("Note", secondary="note_tags", back_populates="tags")
+
+
+class NoteTags(db.Model):
+    """
+    m2m table for adding multiply tags for one note
+    """
+    __tablename__ = "note_tags"
+    id = db.Column(db.Integer, primary_key=True)
+    note_id = db.Column(db.Integer, db.ForeignKey("notes.id", ondelete="CASCADE"))
+    tag_id = db.Column(db.Integer, db.ForeignKey("tags.id", ondelete="CASCADE"))
 
 
 @login.user_loader
