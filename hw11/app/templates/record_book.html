@@ -2,7 +2,7 @@
 
 {% block content %}
 {% if book.record %}
-  <h3>Your records in {{ book.title }} is:</h3>
+  <h3>Your records in {{ book.title }} is:</h3>  <span><a href="{{ url_for('edit_record_book', title=book.title) }}">Edit book name</a></span>
   <ul>
     {% for record in book.record %}
       <li><a href="{{ url_for('show_record', title=book.title, record_name=record.name) }}">{{ record.name }}</a></li>

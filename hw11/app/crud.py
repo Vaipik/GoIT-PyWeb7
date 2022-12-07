@@ -1,5 +1,5 @@
 from sqlalchemy import and_
-from sqlalchemy.orm import joinedload, lazyload
+from sqlalchemy.orm import joinedload
 
 from . import db
 from .models import User, RecordBook, Record, Phone, Email
@@ -17,13 +17,13 @@ def create_record(form, title: str, user):
 
     phones = []
     for phone in form.phones.data:
-        phone_number = phone.get("field")
+        phone_number = phone.get("value")
         if phone_number:
             phones.append(Phone(value=phone_number))
 
     emails = []
     for email in form.emails.data:
-        email_address = email.get("field")
+        email_address = email.get("value")
         if email_address:
             emails.append(Email(value=email_address))
 
@@ -75,4 +75,41 @@ def read_record(title, user, record_name) -> Record | None:
         .options(joinedload("phones"), joinedload("emails")) \
         .join(RecordBook, and_(Record.book_id == RecordBook.id, RecordBook.title == title)) \
         .join(User, RecordBook.username_id == User.id) \
+        .filter(Record.name == record_name) \
         .first()
+
+
+def update_record_book(title: str, book: RecordBook):
+    book.title = title
+    db.session.commit()
+
+
+def update_record(record: Record, form):
+    """
+
+    :param record:
+    :param form:
+    :return:
+    """
+    print(read_record_phones(record))
+    phones = []
+    for phone in form.phones.data:
+        phone_number = phone.get("value")
+        if phone_number:
+            phones.append(Phone(value=phone_number))
+
+    emails = []
+    for email in form.emails.data:
+        email_address = email.get("value")
+        if email_address:
+            emails.append(Email(value=email_address))
+
+    record.phones = phones
+    record.emails = emails
+    db.session.commit()
+
+
+def read_record_phones(record: Record) -> list:
+
+    phones = Phone.query.filter_by(record=record).all()
+    return phones
