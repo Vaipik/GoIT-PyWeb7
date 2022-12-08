@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block app_content %}
 <h2>Editing {{ title }} title</h2>
 <form action="{{ url_for('records.edit_record_book', title=title) }}" method="post" novalidate>
   {{ form.hidden_tag() }}

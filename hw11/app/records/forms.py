@@ -25,7 +25,7 @@ class EditRecordBookForm(NewRecordBookForm):
 
 
 class PhoneForm(FlaskForm):
-    value = StringField("phone number", description="0123456789", validators=[Optional(strip_whitespace=False)])
+    value = StringField("phone numbers", description="0123456789", validators=[Optional(strip_whitespace=False)])
 
     def validate_field(self, value):
         number = value.data

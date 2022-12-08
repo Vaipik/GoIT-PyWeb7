@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block app_content %}
 {% if book.record %}
   <h3>Your records in {{ book.title }} is:</h3>  <span><a href="{{ url_for('records.edit_record_book', title=book.title) }}">Edit book name</a></span>
   <ul>

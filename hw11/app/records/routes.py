@@ -68,9 +68,9 @@ def new_record(title):
     book = crud.read_record_book(title=title, user=current_user)
 
     form = NewRecordForm()
+
     if form.validate_on_submit():
         form.update_self()
-
         if form.submit.data:
             crud.create_record(form=form, title=title, user=current_user)
             return redirect(

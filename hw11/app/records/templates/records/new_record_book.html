@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block app_content %}
 <h2>New record book creation</h2>
 <form action="{{ url_for('records.new_record_book') }}" method="post">
   {{ form.hidden_tag() }}

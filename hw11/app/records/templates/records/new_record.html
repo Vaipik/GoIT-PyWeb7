@@ -1,30 +1,42 @@
 {% extends 'base.html' %}
-{% from '_record_fields.html' import show_form_fields %}
-{% block content %}
 
+{% from 'records/_record_fields.html' import show_form_fields %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
 <h3>New record for <i>{{ book.title }}</i> book</h3>
 
-<form action="{{ url_for('records.new_record', title=book.title) }}" method="post" novalidate>
+<form class="form form-horizontal" action="{{ url_for('records.new_record', title=book.title) }}" method="post" novalidate>
   {{ form.hidden_tag() }}
-  <p>
-    {{ form.name.label }}<br>
-    {{ form.name(size=32, placeholder="Enter contact name in this field") }}<br>
-    {% for error in form.name.errors %}
-    <span style="color: red;">{{ error }}</span>
-    {% endfor %}
-  <hr>
+  <div class="container">
 
-  <p>
-    {{ form.birthday.label }}<br>
-    {{ form.birthday(size=32) }}<br>
-    {% for error in form.birthday.errors %}
-    <span style="color: red;">{{ error }}</span>
-    {% endfor %}
-  <hr>
+    <div class="row">
+      <div class="col-sm-5">
+        {{ wtf.form_field(form.name) }}
+      </div>
+    </div>
 
-  <div>{{ show_form_fields(field_form=form.phones, placeholder="Enter phone number", button_type=form.new_phone) }}</div>
-  <div>{{ show_form_fields(field_form=form.emails, placeholder="Enter email address", button_type=form.new_email) }}</div>
-  <p>{{ form.submit }}</p>
+    <div class="row">
+      <div class="col-sm-5">
+        {{ wtf.form_field(form.birthday) }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-5">
+        {{ show_form_fields(field_form=form.phones, placeholder="Enter phone number", button_type=form.new_phone) }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-5">
+        {{ show_form_fields(field_form=form.emails, placeholder="Enter email address", button_type=form.new_email) }}
+      </div>
+    </div>
+
+    <div class="row">{{ wtf.form_field(form.submit) }}</div>
+
+  </div>
 
 </form>
 

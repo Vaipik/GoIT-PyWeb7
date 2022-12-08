@@ -3,13 +3,14 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 
 
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 bootstrap = Bootstrap()
-
+csrf = CSRFProtect()
 """TO AVOID CYCLIC IMPORT"""
 from app.auth import bp as auth_bp
 from app.records import bp as rec_bp
@@ -25,6 +26,7 @@ def create_app() -> Flask:
 
 	db.init_app(app)
 	migrate.init_app(app, db)
+	csrf.init_app(app)
 	bootstrap.init_app(app)
 	login.init_app(app)
 	login.login_view = "login"

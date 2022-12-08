@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 
 
-{% block content %}
-<h3>Hello {{ user.username }}</h3>
-<h4>Password is {{ user.password }}</h4>
-<h3>You record books is:</h3>
+{% block app_content %}
+<h3>Hello {{ current_user.username }}!</h3>
+<h3>You have following record books:</h3>
 <ul>
   {% for book in user.record_book %}
     <li><a href="{{ url_for('records.record_book', title=book.title, book=book) }} ">{{ book.title }}</a></li>
@@ -12,7 +11,7 @@
   <p><a href="{{ url_for('records.new_record_book') }} ">New record book</a></p>
 </ul>
 <hr>
-<h3>You notebooks is:</h3>
+<h3>You have following note books:</h3>
 <ul>
   {% for book in user.note_book %}
     <li><a href="{{ url_for('notes.note_book',book=book.title) }} ">{{ book.title }}</a></li>
