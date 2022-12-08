@@ -1,10 +1,9 @@
 from flask import render_template, redirect, flash, url_for
 from flask_login import current_user, login_user, logout_user
 
-from app.models import User
-from app.auth.forms import LoginForm, RegistrationForm
 from app.auth import bp
 from app.auth import crud
+from app.auth.forms import LoginForm, RegistrationForm
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -14,8 +13,7 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-
+        user = crud.read_user(form.username.data)
         if user is None or not user.check_password(form.password.data):
             flash("Invalid username or password")
             return redirect(url_for("index"))

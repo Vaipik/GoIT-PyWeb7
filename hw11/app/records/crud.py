@@ -91,7 +91,6 @@ def update_record(record: Record, form):
     :param form:
     :return:
     """
-    print(read_record_phones(record))
     phones = []
     for phone in form.phones.data:
         phone_number = phone.get("value")

@@ -2,8 +2,8 @@ from flask import render_template, redirect, flash, url_for, request
 from flask_login import current_user, login_required
 
 from app.records import bp
-from .forms import NewRecordBookForm, NewRecordForm, EditRecordBookForm, EditRecordForm
 from . import crud
+from .forms import NewRecordBookForm, NewRecordForm, EditRecordBookForm, EditRecordForm
 
 
 @bp.route("/edit_record_book/<string:title>", methods=["GET", "POST"])

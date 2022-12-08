@@ -2,14 +2,14 @@
 
 {% block content %}
 {% if book.record %}
-  <h3>Your records in {{ book.title }} is:</h3>  <span><a href="{{ url_for('edit_record_book', title=book.title) }}">Edit book name</a></span>
+  <h3>Your records in {{ book.title }} is:</h3>  <span><a href="{{ url_for('records.edit_record_book', title=book.title) }}">Edit book name</a></span>
   <ul>
     {% for record in book.record %}
-      <li><a href="{{ url_for('show_record', title=book.title, record_name=record.name) }}">{{ record.name }}</a></li>
+      <li><a href="{{ url_for('records.show_record', title=book.title, record_name=record.name) }}">{{ record.name }}</a></li>
     {% endfor %}
   </ul>
 {% else %}
-  <h3>No records in {{ book.title }} book</h3><span><a href="{{ url_for('edit_record_book', title=book.title) }}">Edit book name</a></span>
+  <h3>No records in {{ book.title }} book</h3><span><a href="{{ url_for('records.edit_record_book', title=book.title) }}">Edit book name</a></span>
 {% endif %}
-  <p><a href="{{ url_for('new_record', title=book.title) }} ">New record</a></p>
+  <p><a href="{{ url_for('records.new_record', title=book.title) }} ">New record</a></p>
 {% endblock %}

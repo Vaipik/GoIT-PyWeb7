@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h3>Information about {{ record.name }}</h3><span><a href="{{ url_for('edit_record', record_name=record.name, title=title) }}">Edit record</a></span>
+<h3>Information about {{ record.name }}</h3><span><a href="{{ url_for('records.edit_record', record_name=record.name, title=title) }}">Edit record</a></span>
 
 {{ record.birthday }}
 

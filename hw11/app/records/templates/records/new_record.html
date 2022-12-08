@@ -4,7 +4,7 @@
 
 <h3>New record for <i>{{ book.title }}</i> book</h3>
 
-<form action="{{ url_for('new_record', title=book.title) }}" method="post" novalidate>
+<form action="{{ url_for('records.new_record', title=book.title) }}" method="post" novalidate>
   {{ form.hidden_tag() }}
   <p>
     {{ form.name.label }}<br>

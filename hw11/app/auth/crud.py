@@ -1,6 +1,4 @@
-from app import db
-
-from app.models import User
+from app.models import User, db
 
 
 def create_user(form) -> None:

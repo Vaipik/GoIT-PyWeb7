@@ -5,7 +5,7 @@
 
 <h3>Editing data about: <i>{{ form.name.data }}</i></h3>
 
-<form action="{{ url_for('edit_record', record_name=form.name.data, title=title) }}" method="post" novalidate>
+<form action="{{ url_for('records.edit_record', record_name=form.name.data, title=title) }}" method="post" novalidate>
   {{ form.hidden_tag() }}
   <p>
     {{ form.name.label }}<br>
@@ -29,5 +29,5 @@
   <hr>
 
 </form>
-<a href="{{ url_for('delete_record', title=title, record_name=form.name.data) }}">Delete record</a>
+<a href="{{ url_for('records.delete_record', title=title, record_name=form.name.data) }}">Delete record</a>
 {% endblock %}

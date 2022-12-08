@@ -1,6 +1,7 @@
-from . import db, login
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from app import db, login
 
 
 class User(UserMixin, db.Model):
@@ -29,7 +30,7 @@ class RecordBook(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), index=True, nullable=False, unique=False)
     username_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"))
-    user = db.relationship("User", back_populates="records")
+    user = db.relationship("User", back_populates="record_book")
     record = db.relationship("Record", back_populates="book", cascade="all, delete, delete-orphan")
 
 

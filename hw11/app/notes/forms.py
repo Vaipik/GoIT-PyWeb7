@@ -1,13 +1,7 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FieldList, FormField, DateField, TelField, \
-    TextAreaField, DateTimeField
-from wtforms.validators import ValidationError, EqualTo, DataRequired, Optional
-
-
-
-
-
+from wtforms import StringField, SubmitField, FieldList, TextAreaField, DateTimeField
+from wtforms.validators import ValidationError, DataRequired, Optional
 
 
 class NewNoteBookForm(FlaskForm):
