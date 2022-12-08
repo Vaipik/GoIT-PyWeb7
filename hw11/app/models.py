@@ -4,6 +4,10 @@ from flask_login import UserMixin
 
 
 class User(UserMixin, db.Model):
+    """
+    :param username: user login.\n
+    :param password: user password.\n
+    """
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -25,7 +29,7 @@ class RecordBook(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), index=True, nullable=False, unique=False)
     username_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"))
-    user = db.relationship("User", back_populates="record_book")
+    user = db.relationship("User", back_populates="records")
     record = db.relationship("Record", back_populates="book", cascade="all, delete, delete-orphan")
 
 

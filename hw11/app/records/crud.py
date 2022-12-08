@@ -1,8 +1,8 @@
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
 
-from . import db
-from .models import User, RecordBook, Record, Phone, Email
+from app import db
+from app.models import User, RecordBook, Record, Phone, Email
 
 
 def create_record(form, title: str, user):
