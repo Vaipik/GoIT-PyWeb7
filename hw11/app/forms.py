@@ -130,6 +130,10 @@ class EditNoteBookForm(NewNoteBookForm):
     submit = SubmitField("Edit")
 
 
+class TagForm(FlaskForm):
+
+    name = StringField("Tag name", validators=[Optional(strip_whitespace=False)])
+
 class NewNoteForm(FlaskForm):
 
     note_title = StringField("Note book title", validators=[DataRequired()])

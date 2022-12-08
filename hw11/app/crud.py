@@ -109,7 +109,12 @@ def update_record(record: Record, form):
     db.session.commit()
 
 
-def read_record_phones(record: Record) -> list:
+def delete_record_book(book: RecordBook):
+    db.session.delete(book)
+    db.session.commit()
 
-    phones = Phone.query.filter_by(record=record).all()
-    return phones
+
+def delete_record(record: Record):
+    db.session.delete(record)
+    db.session.commit()
+

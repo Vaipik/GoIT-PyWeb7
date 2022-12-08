@@ -50,6 +50,23 @@ def edit_record(record_name, title):
     )
 
 
+@app.route("/deleting_record_book/<string:title>")
+@login_required
+def delete_record_book(title):
+    book = crud.read_record_book(title=title, user=current_user)
+    crud.delete_record_book(book)
+    return redirect(url_for("profile", username=current_user.username))
+
+
+@app.route("/<string:title>/deleting_record/<string:record_name>")
+@login_required
+def delete_record(title, record_name):
+    record = crud.read_record(title=title, user=current_user, record_name=record_name)
+    crud.delete_record(record)
+    return redirect(url_for("record_book", title=title))
+
+
+app.route("/")
 @app.route("/")
 @app.route("/index")
 @login_required
