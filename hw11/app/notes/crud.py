@@ -80,8 +80,22 @@ def update_note_book(title: str, book: NoteBook):
     db.session.commit()
 
 
-def update_note(record: Note, form):
-    pass
+def update_note(note: Note, form):
+
+    tags = []
+    for tag in form.tags.data:
+        tag_name = tag.get("tag_name")
+        if tag_name:
+            tags.append(Tag(tag_name=tag_name))
+
+
+    note.note_title=form.note_title.data
+    note.text=form.text.data
+    note.edited_at=datetime.now()
+    note.tags=tags
+
+    db.session.add(note)
+    db.session.commit()
 
 
 def delete_note_book(book: NoteBook):
@@ -92,4 +106,3 @@ def delete_note_book(book: NoteBook):
 def delete_note(record: Note):
     db.session.delete(record)
     db.session.commit()
-

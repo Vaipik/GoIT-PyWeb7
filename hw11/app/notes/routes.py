@@ -29,13 +29,13 @@ def edit_note_book(title):
 @bp.route("/<string:title>/edit_note/<string:note_title>", methods=["GET", "POST"])
 @login_required
 def edit_note(note_title, title):
-    record = crud.read_note(title=title, user=current_user, note_title=note_title)
-    form = EditNoteForm(obj=record)
+    note = crud.read_note(title=title, user=current_user, note_title=note_title)
+    form = EditNoteForm(obj=note)
     if request.method == "POST" and form.validate_on_submit():
         form.update_self()
 
         if form.submit.data:
-            crud.update_note(record=record, form=form)
+            crud.update_note(note=note, form=form)
             flash("Data has been changed successfully")
             return redirect(url_for("notes.show_note", title=title, note_title=form.note_title.data))
 
