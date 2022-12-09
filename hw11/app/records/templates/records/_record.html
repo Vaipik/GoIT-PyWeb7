@@ -1,0 +1,36 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% from 'records/_record_fields.html' import show_form_fields %}
+
+{% macro record(form) %}
+
+{{ form.hidden_tag() }}
+  <div class="container">
+
+    <div class="row">
+      <div class="col-sm-5">
+        {{ wtf.form_field(form.name) }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-5">
+        {{ wtf.form_field(form.birthday) }}
+      </div>
+    </div>
+
+    <div class="row">
+        {{ show_form_fields(field_form=form.phones, placeholder="Enter phone number", button_type=form.new_phone) }}
+    </div>
+
+    <div class="row">
+        {{ show_form_fields(field_form=form.emails, placeholder="Enter email address", button_type=form.new_email) }}
+    </div>
+
+    <div class="row">
+      {{ wtf.form_field(form.submit) }}
+    </div>
+
+  </div>
+
+{% endmacro %}

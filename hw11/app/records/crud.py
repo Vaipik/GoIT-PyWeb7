@@ -102,7 +102,7 @@ def update_record(record: Record, form):
         email_address = email.get("value")
         if email_address:
             emails.append(Email(value=email_address))
-
+    record.birthday = form.birthday.data
     record.phones = phones
     record.emails = emails
     db.session.commit()

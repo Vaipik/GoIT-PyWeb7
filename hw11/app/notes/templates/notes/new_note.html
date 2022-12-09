@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% from 'notes/_note.html' import note %}
+
+{% block app_content %}
+<h3>New note for <i>{{ book.title }}</i> book</h3>
+
+<form class="form form-control" action="{{ url_for('notes.new_note', title=book.title) }}" method="post" novalidate>
+  {{ note(form) }}
+</form>
+
+
+{% endblock %}

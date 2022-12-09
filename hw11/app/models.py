@@ -81,7 +81,7 @@ class Note(db.Model):
     note_title = db.Column(db.String(100), index=True, nullable=False)
     text = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
-    edited_at = db.Column(db.DateTime, nullable=False, default=None)
+    edited_at = db.Column(db.DateTime, nullable=True, default=None)
     book_id = db.Column(db.Integer, db.ForeignKey("note_books.id", ondelete="CASCADE", onupdate="CASCADE"))
     book = db.relationship("NoteBook", back_populates="note")
     tags = db.relationship("Tag", secondary="note_tags", back_populates="notes")
@@ -91,7 +91,7 @@ class Tag(db.Model):
     __tablename__ = "tags"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
+    tag_name = db.Column(db.String(30), nullable=False)
     notes = db.relationship("Note", secondary="note_tags", back_populates="tags")
 
 

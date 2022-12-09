@@ -5,11 +5,11 @@
 {% block app_content %}
 <h2>Editing {{ title }} title
   <span>
-    <a class="btn btn-primary" href="{{ url_for('records.delete_record_book', title=title) }}">Delete record book</a>
+    <a class="btn btn-primary" href="{{ url_for('notes.delete_note_book', title=title) }}">Delete note book</a>
   </span>
 </h2>
 
-<form action="{{ url_for('records.edit_record_book', title=title) }}" method="post" novalidate>
+<form action="{{ url_for('notes.edit_note_book', title=title) }}" method="post" novalidate>
   {{ form.hidden_tag() }}
   <div class="container">
 

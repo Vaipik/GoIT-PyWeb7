@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<h2>New note book creation</h2>
+<form action="{{ url_for('notes.new_note_book') }}" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.title.label }}<br>
+    {{ form.title(size=32, placeholder="Enter record book name in this field") }}<br>
+    {% for error in form.title.errors %}
+    <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+  </p>
+  <p>{{ form.submit }}</p>
+</form>
+
+
+{% endblock %}

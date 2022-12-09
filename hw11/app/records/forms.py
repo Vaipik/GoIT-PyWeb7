@@ -25,7 +25,7 @@ class EditRecordBookForm(NewRecordBookForm):
 
 
 class PhoneForm(FlaskForm):
-    value = StringField("phone numbers", description="0123456789", validators=[Optional(strip_whitespace=False)])
+    value = StringField("phone numbers", description="Enter phone number in the field above", validators=[Optional(strip_whitespace=False)])
 
     def validate_field(self, value):
         number = value.data
@@ -38,7 +38,7 @@ class PhoneForm(FlaskForm):
 
 
 class EmailForm(FlaskForm):
-    value = StringField("email", description="example@mail.com", validators=[Optional(strip_whitespace=False)])
+    value = StringField("email", description="Enter email in the above", validators=[Optional(strip_whitespace=False)])
 
     def validate_field(self, value):
         email = value.data
@@ -53,7 +53,7 @@ class NewRecordForm(FlaskForm):
 
     name = StringField("Contact name", description="Enter name in this field", validators=[DataRequired(message="Enter contact name")])
     birthday = DateField("Birthday", validators=[Optional()])
-    phones = FieldList(FormField(PhoneForm, label="Phone number"), min_entries=1, max_entries=5)
+    phones = FieldList(FormField(PhoneForm, description="Enter phone number here"), min_entries=1, max_entries=5)
     emails = FieldList(FormField(EmailForm), min_entries=1, max_entries=5)
     submit = SubmitField("Add new record")
     new_phone = SubmitField("Add new phone")
@@ -67,8 +67,9 @@ class NewRecordForm(FlaskForm):
             phones: list = read_form_data["phones"]
             new_phone = phones[-1].get("value")
 
-            if len(new_phone) != 10 and not new_phone.isdigit():
-                phones.pop()  # if not validated do not add new field
+            if len(new_phone) != 10:
+                if not new_phone.isdigit():
+                    phones.pop()  # if not validated do not add new field
             else:
                 phones.append({})
             read_form_data["phones"] = phones

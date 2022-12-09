@@ -1,0 +1,33 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% from 'notes/_note_fields.html' import show_form_fields %}
+
+{% macro note(form) %}
+
+{{ form.hidden_tag() }}
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col-sm-5">
+        {{ wtf.form_field(form.note_title) }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-5">
+        {{ wtf.form_field(form.text) }}
+      </div>
+    </div>
+
+    <div class="row">
+        {{ show_form_fields(field_form=form.tags, placeholder="Enter tag_name", button_type=form.new_tag) }}
+    </div>
+
+    <div class="row">
+      {{ wtf.form_field(form.submit) }}
+    </div>
+
+  </div>
+
+{% endmacro %}

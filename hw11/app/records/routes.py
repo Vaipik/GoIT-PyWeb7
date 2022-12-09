@@ -1,7 +1,7 @@
 from flask import render_template, redirect, flash, url_for, request
 from flask_login import current_user, login_required
 
-from app.records import bp
+from . import bp
 from . import crud
 from .forms import NewRecordBookForm, NewRecordForm, EditRecordBookForm, EditRecordForm
 
@@ -39,6 +39,7 @@ def edit_record(record_name, title):
             # form.populate_obj(record)
             crud.update_record(record=record, form=form)
             flash("Data has been changed successfully")
+            return redirect(url_for("records.show_record", title=title, record_name=form.name.data))
 
     return render_template(
         template_name_or_list="records/edit_record.html",
@@ -102,7 +103,7 @@ def new_record_book():
         )
 
     return render_template(
-        template_name_or_list="new_record_book.html",
+        template_name_or_list="records/new_record_book.html",
         title="New record book",
         form=form
     )

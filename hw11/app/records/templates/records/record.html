@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
+{% from 'records/_record_fields.html' import show_entries %}
 {% block app_content %}
 
-<h3>Information about {{ record.name }}</h3><span><a href="{{ url_for('records.edit_record', record_name=record.name, title=title) }}">Edit record</a></span>
-
-{{ record.birthday }}
-
+<h3>{{ record.name }} <span><a class="btn btn-primary" href="{{ url_for('records.edit_record', record_name=record.name, title=title) }}">Edit record</a></span></h3>
+<hr>
+<h4>Birthday:</h4>
+<div class="list-group">
+  <p class="list-group-item">
+    {% if record.birthday %}
+      {{ record.birthday }}
+    {% else %}
+      No birthday data
+    {% endif %}
+</div>
+<hr>
 <h4>Phones:</h4>
-<ul>
-  {% for phone in record.phones %}
-    <li>{{ phone.value }}</li>
-  {% endfor %}
-</ul>
-
+{{ show_entries(entries_list=record.phones, msg="No phones for this record") }}
 <h4>Emails:</h4>
-<ul>
-  {% for email in record.emails %}
-    <li>{{ email.value }}</li>
-  {% endfor %}
-</ul>
+{{ show_entries(entries_list=record.emails, msg="No emails for this record") }}
 
 {% endblock %}

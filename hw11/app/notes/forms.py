@@ -1,7 +1,9 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FieldList, TextAreaField, DateTimeField
+from wtforms import StringField, SubmitField, FieldList, TextAreaField, DateTimeField, FormField
 from wtforms.validators import ValidationError, DataRequired, Optional
+
+from . import crud
 
 
 class NewNoteBookForm(FlaskForm):
@@ -21,13 +23,36 @@ class EditNoteBookForm(NewNoteBookForm):
 
 
 class TagForm(FlaskForm):
+    tag_name = StringField("Tag name", validators=[Optional(strip_whitespace=False)])
 
-    name = StringField("Tag name", validators=[Optional(strip_whitespace=False)])
 
 class NewNoteForm(FlaskForm):
 
     note_title = StringField("Note book title", validators=[DataRequired()])
     text = TextAreaField("Note text", validators=[Optional()])
-    created_at = DateTimeField("Created at:")
-    tags = FieldList()
+    tags = FieldList(FormField(TagForm), min_entries=1, max_entries=5)
     submit = SubmitField("Create note")
+    new_tag = SubmitField("Add new tag")
+
+    def update_self(self):
+
+        read_form_data = self.data
+
+        if read_form_data["new_tag"]:
+
+            tags: list = read_form_data["tags"]
+            print(tags)
+            new_tag = tags[-1].get("tag_name")
+            if new_tag:
+                tags.append({})
+            else:
+                tags.pop()
+
+            read_form_data["tags"] = tags
+
+        self.__init__(formdata=None, **read_form_data)  # reload the form from modified data
+        self.validate()
+
+
+class EditNoteForm(NewNoteForm):
+    submit = SubmitField("Edit")

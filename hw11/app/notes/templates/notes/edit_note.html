@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% from 'notes/_note.html' import note %}
+
+{% block app_content %}
+
+<h3>Editing data about: <i>{{ form.note_title.data }}</i>
+  <span>
+    <a class="btn btn-primary" href="{{ url_for('notes.delete_note', title=title, note_title=form.note_title.data) }}">Delete note</a>
+  </span>
+</h3>
+
+<form action="{{ url_for('notes.edit_note', note_title=form.note_title.data, title=title) }}" method="post" novalidate>
+
+  {{ note(form) }}
+
+</form>
+
+
+{% endblock %}

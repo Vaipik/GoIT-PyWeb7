@@ -1,33 +1,18 @@
 {% extends 'base.html' %}
-{% from 'records/_record_fields.html' import show_form_fields %}
+
+{% from 'records/_record.html' import record %}
 
 {% block app_content %}
 
-<h3>Editing data about: <i>{{ form.name.data }}</i></h3>
+<h3>Editing data about: <i>{{ form.name.data }}</i> <span>
+<a class="btn btn-primary" href="{{ url_for('records.delete_record', title=title, record_name=form.name.data) }}">Delete record</a>
+</span></h3>
 
 <form action="{{ url_for('records.edit_record', record_name=form.name.data, title=title) }}" method="post" novalidate>
-  {{ form.hidden_tag() }}
-  <p>
-    {{ form.name.label }}<br>
-    {{ form.name(size=32, placeholder="Enter contact name in this field") }}<br>
-    {% for error in form.name.errors %}
-      <span style="color: red;">{{ error }}</span>
-    {% endfor %}
-  <hr>
 
-  <p>
-    {{ form.birthday.label }}<br>
-    {{ form.birthday(size=32) }}<br>
-    {% for error in form.birthday.errors %}
-    <span style="color: red;">{{ error }}</span>
-    {% endfor %}
-  <hr>
-
-  <div>{{ show_form_fields(field_form=form.phones, placeholder="Enter phone number", button_type=form.new_phone) }}</div>
-  <div>{{ show_form_fields(field_form=form.emails, placeholder="Enter email address", button_type=form.new_email) }}</div>
-  <p>{{ form.submit }}
-  <hr>
+  {{ record(form) }}
 
 </form>
-<a href="{{ url_for('records.delete_record', title=title, record_name=form.name.data) }}">Delete record</a>
+
+
 {% endblock %}

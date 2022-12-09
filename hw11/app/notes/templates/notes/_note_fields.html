@@ -21,16 +21,3 @@
 
 {% endmacro %}
 
-{% macro show_entries(entries_list, msg="No data") %}
-<div class="list-group">
-  {% if entries_list %}
-    {% for entry in entries_list %}
-      <p class="list-group-item">{{ entry.value }}</p>
-    {% endfor %}
-  {% else %}
-    <p class="list-group-item">{{ msg }}</p>
-  {% endif %}
-</div>
-<hr>
-{% endmacro %}
-

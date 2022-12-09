@@ -1,9 +1,9 @@
 from flask import render_template, redirect, flash, url_for
 from flask_login import current_user, login_user, logout_user
 
-from app.auth import bp
-from app.auth import crud
-from app.auth.forms import LoginForm, RegistrationForm
+from . import bp
+from . import crud
+from .forms import LoginForm, RegistrationForm
 
 
 @bp.route("/login", methods=["GET", "POST"])

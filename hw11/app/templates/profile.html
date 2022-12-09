@@ -4,17 +4,28 @@
 {% block app_content %}
 <h3>Hello {{ current_user.username }}!</h3>
 <h3>You have following record books:</h3>
-<ul>
-  {% for book in user.record_book %}
-    <li><a href="{{ url_for('records.record_book', title=book.title, book=book) }} ">{{ book.title }}</a></li>
-  {% endfor %}
-  <p><a href="{{ url_for('records.new_record_book') }} ">New record book</a></p>
-</ul>
+<div class="list-group">
+  {% if user.record_book %}
+    {% for book in user.record_book %}
+      <p class="list-group-item"><a href="{{ url_for('records.record_book', title=book.title, book=book) }}">{{ book.title }}</a></p>
+    {% endfor %}
+  {% else %}
+    No books
+  {% endif %}
+</div>
+<p><a class="btn btn-primary" href="{{ url_for('records.new_record_book') }}">New record book</a></p>
 <hr>
-<h3>You have following note books:</h3>
-<ul>
-  {% for book in user.note_book %}
-    <li><a href="{{ url_for('notes.note_book',book=book.title) }} ">{{ book.title }}</a></li>
-  {% endfor %}
-</ul>
+<h3>You have the following note books:</h3>
+  {% if user.note_book %}
+<div class="list-group">
+    {% for book in user.note_book %}
+      <p class="list-group-item"><a href="{{ url_for('notes.note_book',title=book.title) }}">{{ book.title }}</a></p>
+    {% endfor %}
+</div>
+  {% else %}
+  No books
+  {% endif %}
+  <p><a class="btn btn-primary" href="{{ url_for('notes.new_note_book') }}">New note book</a></p>
+
+
 {% endblock %}
