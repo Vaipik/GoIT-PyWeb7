@@ -32,7 +32,7 @@ def create_app() -> Flask:
     csrf.init_app(app)
     bootstrap.init_app(app)
     login.init_app(app)
-    login.login_view = "login"
+    login.login_view = "auth.login"
 
     with app.app_context():
         from app import routes
