@@ -97,7 +97,7 @@ def new_record_book():
         flash(f"{form.title.data} has been created")
         return redirect(
             url_for(
-                endpoint="records/record_book",
+                endpoint="records.record_book",
                 title=form.title.data
             )
         )

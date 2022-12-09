@@ -7,7 +7,7 @@ def create_user(form) -> None:
     :param form: user registration form
     :return: None
     """
-    user = User(username=form.name.data)
+    user = User(username=form.username.data)
     user.set_password(form.password.data)
     db.session.add(user)
     db.session.commit()
