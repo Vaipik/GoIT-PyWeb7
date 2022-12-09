@@ -10,25 +10,26 @@
 </ol>
 
 <h4>Following packages are used:</h4>
-* alembic==1.8.1
-* click==8.1.3
-* dominate==2.7.0
-* Flask==2.2.2
-* Flask-Bootstrap==3.3.7.1
-* Flask-Login==0.6.2
-* Flask-Migrate==4.0.0
-* Flask-SQLAlchemy==3.0.2
-* Flask-WTF==1.0.1
-* greenlet==2.0.1
-* itsdangerous==2.1.2
-* Jinja2==3.1.2
-* Mako==1.2.4
-* MarkupSafe==2.1.1
-* mysqlclient==2.1.1
-* SQLAlchemy==1.4.44
-* visitor==0.1.3
-* WTForms==3.0.1
-
+<ul>
+<li> alembic==1.8.1
+<li> click==8.1.3
+<li> dominate==2.7.0
+<li> Flask==2.2.2
+<li> Flask-Bootstrap==3.3.7.1
+<li> Flask-Login==0.6.2
+<li> Flask-Migrate==4.0.0
+<li> Flask-SQLAlchemy==3.0.2
+<li> Flask-WTF==1.0.1
+<li> greenlet==2.0.1
+<li> itsdangerous==2.1.2
+<li> Jinja2==3.1.2
+<li> Mako==1.2.4
+<li> MarkupSafe==2.1.1
+<li> mysqlclient==2.1.1
+<li> SQLAlchemy==1.4.44
+<li> visitor==0.1.3
+<li> WTForms==3.0.1
+</ul>
 <h4>For future TODO:</h4>
 <ol>
     <li>Substitute Flask-WTF for pure html forms</li>
