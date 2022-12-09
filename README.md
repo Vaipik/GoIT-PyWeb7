@@ -9,5 +9,6 @@
     <li>simple texting in network by using socket module</li>
     <li>One course database with random filling and raw sql queries by using sqlite3</li>
     <li>CLI helper from PythonCore-7 final project with storing data in DB by using SQLAlchemy and Alembic</li> 
-    <li>CLI helper from PythonCore-7 final project with storing data in MongoDB</li> 
+    <li>CLI helper from PythonCore-7 final project with storing data in MongoDB</li>
+    <li>CLI helper from PythonCore-7 final project performed by using Flask</li> 
 </ol>
