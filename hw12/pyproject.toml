@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "goit-pyweb7-hw12"
+version = "0.1.0"
+description = ""
+authors = ["Vaipik <n.khylko@gmail.com>"]
+readme = "README.md"
+packages = [{include = "goit_pyweb7_hw12"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiohttp = "^3.8.3"
+aiohttp-jinja2 = "^1.5"
+alembic = "^1.8.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
