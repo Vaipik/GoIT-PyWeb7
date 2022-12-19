@@ -1,16 +1,26 @@
 [tool.poetry]
-name = "goit-pyweb7-hw12"
+name = "hw12_app"
 version = "0.1.0"
 description = ""
 authors = ["Vaipik <n.khylko@gmail.com>"]
 readme = "README.md"
-packages = [{include = "goit_pyweb7_hw12"}]
+packages = [{include = "hw12"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 aiohttp = "^3.8.3"
 aiohttp-jinja2 = "^1.5"
 alembic = "^1.8.1"
+aiohttp-session = "^2.12.0"
+aiohttp-sqlalchemy = "^0.34.0"
+aiomysql = "^0.1.1"
+pyyaml = "^6.0"
+marshmallow = "^3.19.0"
+bcrypt = "^4.0.1"
+py-mon = "^1.1.0"
+colorama = "^0.4.6"
+watchdog = "^2.2.0"
+iso4217 = "^1.11.20220401"
 
 
 [build-system]

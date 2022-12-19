@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> Zdarova epta</h1>
+
+<div class="container">
+{% for bank, data in banks.items() %}
+  <div class="col">
+    {{ bank }}
+    <div class="row">
+      {{ data }}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% for bank, data in banks.items() %}
+{% endfor %}
+
+{% endblock %}
