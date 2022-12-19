@@ -1,8 +1,8 @@
-mysql:
+postgres:
   database: aiohttp_db
   user: root
   password: password
   host: localhost
-  port: 3306
+  port: 5432
   minsize: 1
   maxsize: 5

@@ -21,6 +21,8 @@ py-mon = "^1.1.0"
 colorama = "^0.4.6"
 watchdog = "^2.2.0"
 iso4217 = "^1.11.20220401"
+psycopg2 = "^2.9.5"
+asyncpg = "^0.27.0"
 
 
 [build-system]
