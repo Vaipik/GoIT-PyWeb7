@@ -1,0 +1,14 @@
+{% extends 'finances/base.html' %}
+
+{% block content %}
+
+<form method="post" action="{% url 'new_users:login' %}" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button name="submit" class="btn btn-primary">log in</button>
+        <input type="hidden" name="next" value="{%url 'learning_logs:index' %}" />
+    {% endbuttons %}
+</form>
+
+{% endblock content %}
