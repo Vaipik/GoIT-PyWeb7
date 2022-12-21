@@ -1,7 +1,29 @@
+<h3>Monobank</h3>
 {% for currency in values %}
-<div class="row">
-  <div class="col">{{ currency["currency"] }}</div>
-  <div class="col">{{ currency["rate_buy"] }}</div>
-  <div class="col">{{ currency["rate_sell"] }}</div>
+<div class="row align-items-center">
+    <div class="col">
+      {{ currency["currency"] }}
+    </div>
+    <div class="col">
+      No data available
+    </div>
+    <div class="col">
+      No data available
+    </div>
+    <div class="col">
+      {% if currency["rate_sell"] %}
+        {{ currency["rate_sell"] }}
+      {% else %}
+        No data available
+      {% endif %}
+    </div>
+    <div class="col">
+      {% if currency["rate_buy"] %}
+        {{ currency["rate_buy"] }}
+      {% else %}
+        No data available
+      {% endif %}
+    </div>
+<hr>
 </div>
 {% endfor %}

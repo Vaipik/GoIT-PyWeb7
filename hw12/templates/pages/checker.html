@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  {% include 'pages/_form.html' %}
+<div class="row align-items-center">
+    <div class="col">
+      Currency
+    </div>
+    <div class="col">
+      National bank sale rate
+    </div>
+    <div class="col">
+      National bank purchase rate
+    </div>
+    <div class="col">
+      Sale rate
+    </div>
+    <div class="col">
+      Purchase rate
+    </div>
+<hr>
+</div>
+  {% for bank, values in banks.items() %}
+    {% if bank == "pb24" %}
+
+      {% include 'pages/_pb.html' %}
+    {% endif %}
+    {% if bank == "mono" %}
+      {% include 'pages/_mono.html' %}
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}

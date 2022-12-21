@@ -9,37 +9,43 @@ from src.repository.mono import MonoBankCRUD
 
 async def index(request):
 
-    urls = {
-        "pb24": "https://api.privatbank.ua/p24api/exchange_rates?json&date=01.12.2014",
-        "mono": "https://api.monobank.ua/bank/currency"
-    }
-    date = datetime.now().date()
-    banks = {}
-    req = await request.post()
-    print(req.get("date"))
-    async with ClientSession() as session:
-        for url in urls:
-            try:
-                response = await session.get(urls.get(url))
-                if response.status == 200:
-                    response_json = await response.json()
+    if request.method == "POST":
+        date = await request.post()
+        date = date.get("date")  # yyyy-mm-dd
+        if not date:
+            return render_template("pages/index.html", request, context=None)
 
-                    if url == "mono":
-                        async with request.app["db_session"] as db_session:
-                            banks[url] = await mono_parser.normalize_json(db_session, response_json)
-                            await MonoBankCRUD.write_to_db(db_session, banks[url])
+        pb24_date = f"{date[-2:]}.{date[5:7]}.{date[:4]}"  # dd.mm.yyyy
+        mono_date = datetime.strptime(date, "%Y-%m-%d")
+        urls = {
+            "pb24": f"https://api.privatbank.ua/p24api/exchange_rates?json&date={pb24_date}",
+            "mono": "https://api.monobank.ua/bank/currency"
+        }
+        banks = {}
 
-                    if url == "pb24":
-                        banks[url] = pb24_parser.normalize_json(response_json)
-                else:
-                    if url == "mono":
-                        async with request.app["db_session"] as db_session:
-                            banks[url] = await MonoBankCRUD.get_currencies_rates(db_session, date)
+        async with ClientSession() as session:
+            for url in urls:
+                try:
+                    response = await session.get(urls.get(url))
+                    if response.status == 200:
+                        response_json = await response.json()
 
-            except Exception as e:
-                print(e)
+                        if url == "mono":
+                            async with request.app["db_session"] as db_session:
+                                banks[url] = await mono_parser.normalize_json(db_session, response_json)
+                                await MonoBankCRUD.write_to_db(db_session, banks[url])
 
-        return render_template("pages/index.html", request, {"banks": banks})
+                        if url == "pb24":
+                            banks[url] = pb24_parser.normalize_json(response_json)
+                    else:
+                        if url == "mono":
+                            async with request.app["db_session"] as db_session:
+                                banks[url] = await MonoBankCRUD.get_currencies_rates(db_session, mono_date)
+                except Exception as e:
+                    print(e)
+
+            return render_template("pages/checker.html", request, {"banks": banks, "title": pb24_date})
+    return render_template("pages/index.html", request, context=None)
 
 
 async def profile(request):

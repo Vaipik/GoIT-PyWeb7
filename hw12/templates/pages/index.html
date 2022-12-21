@@ -1,31 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1> Zdarova epta</h1>
+<h1> Choose the date</h1>
 
-
-
-
-
-<div class="container-md">
-  <form
-  action="/"
-  method="post"
-
->
-  <input type="date" class="form-control" value="date" name="date">
-  <button class="btn btn-primary" type="submit">Push to start</button>
-</form>
-
-{% for bank, values in banks.items() %}
-  {% if bank == "pb24" %}
-
-    {% include 'pages/_pb.html' %}
-  {% endif %}
-  {% if bank == "mono" %}
-    {% include 'pages/_mono.html' %}
-  {% endif %}
-{% endfor %}
-</div>
+{% include 'pages/_form.html' %}
 
 {% endblock %}
