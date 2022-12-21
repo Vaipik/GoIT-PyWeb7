@@ -1,0 +1,10 @@
+{% for currency in values %}
+
+<div class="row">
+  <div class="col">{{ currency["currency"] }}</div>
+  <div class="col">{{ currency["saleRateNB"] }}</div>
+  <div class="col">{{ currency["purchaseRateNB"] }}</div>
+  <div class="col">{{ currency["saleRate"] }}</div>
+  <div class="col">{{ currency["purchaseRate"] }}</div>
+</div>
+{% endfor %}

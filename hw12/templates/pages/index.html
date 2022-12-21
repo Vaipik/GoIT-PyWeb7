@@ -3,17 +3,29 @@
 {% block content %}
 <h1> Zdarova epta</h1>
 
-<div class="container">
-{% for bank, data in banks.items() %}
-  <div class="col">
-    {{ bank }}
-    <div class="row">
-      {{ data }}
-    </div>
-    {% endfor %}
-  </div>
-</div>
-{% for bank, data in banks.items() %}
+
+
+
+
+<div class="container-md">
+  <form
+  action="/"
+  method="post"
+
+>
+  <input type="date" class="form-control" value="date" name="date">
+  <button class="btn btn-primary" type="submit">Push to start</button>
+</form>
+
+{% for bank, values in banks.items() %}
+  {% if bank == "pb24" %}
+
+    {% include 'pages/_pb.html' %}
+  {% endif %}
+  {% if bank == "mono" %}
+    {% include 'pages/_mono.html' %}
+  {% endif %}
 {% endfor %}
+</div>
 
 {% endblock %}

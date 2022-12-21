@@ -3,6 +3,7 @@ import aiohttp_jinja2
 import jinja2
 
 from src import routes, settings
+from src.storage.models import async_pg_context
 
 
 def create_app():
@@ -10,7 +11,7 @@ def create_app():
     app = web.Application()
     aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader("templates"))
     app["config"] = settings.config
-    app["dbsession"]
+    app.cleanup_ctx.append(async_pg_context)
     routes.setup_routes(app)
 
     return app

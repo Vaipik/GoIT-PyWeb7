@@ -1,21 +1,25 @@
 from datetime import datetime
+from src.repository.currency import CurrencyCRUD
 
 
-def normalize_json(response_json: list[dict]) -> list[dict]:
+async def normalize_json(session, response_json: list[dict]) -> list[dict]:
     """
     This function is used to replace currency codes to their names.\n
+    :param session:
     :param response_json: response from monobank api, should be list of dictionaries
     :return: list of dictionaries with replaced currency codes
     """
-    for currency in response_json:
-        date = datetime.utcfromtimestamp(currency.get("date"))
-        currency["currencyCodeA"] = codes.get(
-            currency.get("currencyCodeA")
-        )
-        currency["currencyCodeB"] = codes.get(
-            currency.get("currencyCodeB")
-        )
-        currency["date"] = date.strftime("%Y-%m-%d")
+    result = []
+    for cur in response_json:
+        if cur["currencyCodeB"] == 980:
+            if cur.get("rateBuy"):
+                result.append(
+                    {
+                        "currency": await CurrencyCRUD.get_currency_name(session, cur["currencyCodeA"]),
+                        "rate_buy": cur["rateBuy"],
+                        "rate_sell": cur["rateSell"],
+                        "date": datetime.fromtimestamp(cur["date"]).date()
+                    }
+                )
 
-    return response_json
-
+    return result

@@ -5,11 +5,12 @@ from src.storage.models import Currency
 
 class CurrencyCRUD:
 
-    def get_currency_name(self, session, code: int):
-        result = session.execute(select(Currency.name).where(Currency.code == str(code)))
-        return result
+    @staticmethod
+    async def get_currency_name(session, code: int):
+        result = await session.execute(select(Currency.name).where(Currency.code == code))
+        return result.scalars().first()
 
-    def write_to_db(self, session, codes_list):
+    @staticmethod
+    async def write_to_db(session, codes_list):
         [session.add(Currency(**currency)) for currency in codes_list]
-        session.commit()
-
+        await session.commit()
