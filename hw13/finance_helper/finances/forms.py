@@ -17,3 +17,12 @@ class AddTransactionForm(forms.Form):
         max_length=constants.CATEGORY_MAX_LEGNTH,
         min_length=constants.CATEGORY_MIN_LEGNTH
     )
+    account = forms.ChoiceField(
+        choices=(
+            ("1", "One"),
+            ("2", "Two"),
+            ("3", "Three"),
+            ("4", "Four"),
+            ("5", "Five"),
+        )
+    )

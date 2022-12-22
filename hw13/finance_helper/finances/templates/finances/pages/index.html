@@ -10,6 +10,15 @@
     <div class="col">Balance</div>
 
   </div>
+{% for transaction in  transaction %}
+  <div class="row">
+    <div class="col">{{ transaction.description }}</div>
+    <div class="col">{{ transaction.amount }}</div>
+    <div class="col">{{ transaction.date }}</div>
+    <div class="col">{{ transaction.balance }}</div>
+  </div>
+{% endfor %}
+
 </div>
 
 {% endblock %}

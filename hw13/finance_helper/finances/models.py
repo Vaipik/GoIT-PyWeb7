@@ -7,7 +7,6 @@ from .libs import constants
 
 
 class Category(models.Model):
-
     name = models.CharField(
         max_length=constants.CATEGORY_MAX_LEGNTH,
         unique=True,
@@ -22,7 +21,6 @@ class Category(models.Model):
     )
 
     class Meta:
-
         verbose_name = "Category"
         verbose_name_plural = "Categories"
         ordering = ["-name"]
@@ -32,7 +30,6 @@ class Category(models.Model):
 
 
 class Transaction(models.Model):
-
     description = models.CharField(
         max_length=constants.DESCRIPTION_MAX_LENGTH,
         blank=True,
@@ -51,7 +48,6 @@ class Transaction(models.Model):
     is_costs = models.BooleanField(
         verbose_name="Costs"
     )
-
     slug = AutoSlugField(
         populate_from="description",
         unique=True,
@@ -68,13 +64,11 @@ class Transaction(models.Model):
     )
 
     class Meta:
-
         verbose_name = "Transaction"
         verbose_name_plural = "Transactions"
         ordering = ["-date", "-amount", "-description"]
 
     def save(self, *args, **kwargs):
-        self.balance += self.amount
         self.is_costs = True if self.amount < 0 else False
         super().save(*args, **kwargs)
 
@@ -83,7 +77,12 @@ class Transaction(models.Model):
 
 
 class Account(models.Model):
-
+    name = models.CharField(
+        max_length=constants.ACCOUNT_MAX_LENGTH,
+        blank=False,
+        null=False,
+        verbose_name="Account name"
+    )
     balance = models.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
         decimal_places=constants.DECIMAL_PLACES,
@@ -94,14 +93,12 @@ class Account(models.Model):
         to=User,
         on_delete=models.DO_NOTHING
     )
-    transaction = models.ForeignKey(
-        to="Transaction",
-        on_delete=models.DO_NOTHING
-    )
+    transaction = models.ManyToManyField(Transaction)
 
     class Meta:
-
         verbose_name = "Account",
         verbose_name_plural = "Accounts"
-        ordering = ["-user", ]
+        ordering = ["-user", "-balance"]
 
+    def __str__(self):
+        return self.name
