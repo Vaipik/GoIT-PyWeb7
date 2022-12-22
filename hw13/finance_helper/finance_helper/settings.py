@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'finance_helper.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgres+psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': "django_hw",
         "HOST": "127.0.0.1",
         "PORT": "5432",
