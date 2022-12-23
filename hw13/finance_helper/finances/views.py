@@ -38,10 +38,11 @@ def add_account(request):
 def show_account(request, acc_url):
 
     transactions = models.Transaction.objects.filter(account__slug=acc_url).all()
-    print(transactions)
+    account = transactions.first()
     context = {
         "acc_url": acc_url,
-        "transactions": transactions
+        "transactions": transactions,
+        "account": account
     }
 
     return render(
@@ -83,6 +84,7 @@ def add_transaction(request, acc_url: str):
 
     form = forms.AddTransactionForm()
     categories = models.Category.objects.all()
+    print(categories)
     context = {
         "form": form,
         "categories": categories,

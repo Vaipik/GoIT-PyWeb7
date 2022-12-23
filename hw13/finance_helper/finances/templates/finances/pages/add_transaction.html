@@ -4,18 +4,22 @@
 
   <h1>Adding new transaction!!!</h1>
 <form action="{% url 'finances:add_transaction' acc_url=account.slug %}" method="post">
+<div class="col text-center">
   {% csrf_token %}
-  {{ form.as_p }}
-<label>
-  Choose from the list or write your category
-  <input type="text" name="category" list="dish_list">
-<datalist id="dish_list">
-    {% for category in categories %}
-      <option>{{ category }}</option>
-    {% endfor %}
+  {% for field in form %}
+    <div class="row-sm-4">{{ field }}</div>
+  {% endfor %}
+<label for="categories" class="form-label"> Transaction category
+<input class="form-control" list="items" id="categories" placeholder="Type to search or write your category">
+<datalist id="items">
+  {% for category in categories %}
+  <option value={{ category }}>
+  {% endfor %}
 </datalist>
-  <input type="submit" class="btn btn-primary" value="Submit">
 </label>
+
+  <input type="submit" class="btn btn-primary" value="Submit">
+</div>
 </form>
 
 {% endblock %}
