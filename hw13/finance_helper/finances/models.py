@@ -58,9 +58,10 @@ class Transaction(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
-    user = models.ForeignKey(
-        to=User,
-        on_delete=models.CASCADE
+    account = models.ForeignKey(
+        to="Account",
+        on_delete=models.DO_NOTHING,
+        null=False
     )
 
     class Meta:
@@ -70,35 +71,47 @@ class Transaction(models.Model):
 
     def save(self, *args, **kwargs):
         self.is_costs = True if self.amount < 0 else False
-        super().save(*args, **kwargs)
+        self.account.balance += self.amount
+        self.account.save()  # call save method to account model
+        super(Transaction, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.account.balance -= self.amount
+        self.account.save()  # call save method to account model
+        super(Transaction, self).delete(*args, **kwargs)
 
     def __str__(self):
         return self.description if len(self.description) < 30 else self.description[:30] + "..."
 
 
 class Account(models.Model):
+
     name = models.CharField(
         max_length=constants.ACCOUNT_MAX_LENGTH,
         blank=False,
-        null=False,
+        null=True,
         verbose_name="Account name"
     )
     balance = models.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
         decimal_places=constants.DECIMAL_PLACES,
-        default=0,
-        verbose_name="Remaining balance"
+        verbose_name="Remaining balance",
+        default=0
+    )
+    slug = AutoSlugField(
+        populate_from="description",
+        unique=True,
+        max_length=constants.ACCOUNT_MAX_URL,
     )
     user = models.ForeignKey(
         to=User,
         on_delete=models.DO_NOTHING
     )
-    transaction = models.ManyToManyField(Transaction)
 
     class Meta:
         verbose_name = "Account",
         verbose_name_plural = "Accounts"
-        ordering = ["-user", "-balance"]
+        ordering = ["-name", "-balance"]
 
     def __str__(self):
         return self.name

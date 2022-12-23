@@ -3,20 +3,8 @@
 {% block content %}
 <div class="container">
   <div class="row">
-
-    <div class="col">Description</div>
-    <div class="col">Amount</div>
-    <div class="col">Date</div>
-    <div class="col">Balance</div>
-
-  </div>
-{% for transaction in  transaction %}
-  <div class="row">
-    <div class="col">{{ transaction.description }}</div>
-    <div class="col">{{ transaction.amount }}</div>
-    <div class="col">{{ transaction.date }}</div>
-    <div class="col">{{ transaction.balance }}</div>
-  </div>
+    {% for account in accounts %}
+      <div class="col">{{ account.name }}</div>
 {% endfor %}
 
 </div>

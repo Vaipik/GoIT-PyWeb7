@@ -5,7 +5,16 @@
 <form action="{% url 'finances:add_transaction' %}" method="post">
   {% csrf_token %}
   {{ form.as_p }}
+<label>
+  Choose from the list or write your category
+  <input type="text" name="category" list="dish_list">
+<datalist id="dish_list">
+    {% for category in categories %}
+      <option>{{ category }}</option>
+    {% endfor %}
+</datalist>
   <input type="submit" class="btn btn-primary" value="Submit">
+</label>
 </form>
 
 {% endblock %}
