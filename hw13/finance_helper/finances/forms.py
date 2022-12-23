@@ -15,16 +15,13 @@ class AddTransactionForm(forms.Form):
     )
 
 
-class AddAccountForm(forms.ModelForm):
+class AddAccountForm(forms.Form):
     name = forms.CharField(
         max_length=constants.ACCOUNT_MAX_LENGTH,
         min_length=constants.ACCOUNT_MIN_LENGTH,
+        label="Enter account name"
     )
     balance = forms.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
-        decimal_places=constants.DECIMAL_PLACES
+        decimal_places=constants.DECIMAL_PLACES,
     )
-
-    class Meta:
-        model = models.Account
-        fields = ["name", "balance"]

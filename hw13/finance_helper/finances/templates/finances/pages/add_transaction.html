@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<form action="{% url 'finances:add_transaction' %}" method="post">
+  <h1>Adding new transaction!!!</h1>
+<form action="{% url 'finances:add_transaction' acc_url=account.slug %}" method="post">
   {% csrf_token %}
   {{ form.as_p }}
 <label>

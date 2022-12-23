@@ -45,6 +45,14 @@ class Transaction(models.Model):
         decimal_places=constants.DECIMAL_PLACES,
         verbose_name="Value, UAH"
     )
+    balance = models.DecimalField(
+        max_digits=constants.DECIMAL_MAX_DIGITS,
+        decimal_places=constants.DECIMAL_PLACES,
+        verbose_name="Remaining balance",
+        default=0,
+        blank=True,
+        null=True
+    )
     is_costs = models.BooleanField(
         verbose_name="Costs"
     )
@@ -72,6 +80,7 @@ class Transaction(models.Model):
     def save(self, *args, **kwargs):
         self.is_costs = True if self.amount < 0 else False
         self.account.balance += self.amount
+        self.balance = self.account.balance
         self.account.save()  # call save method to account model
         super(Transaction, self).save(*args, **kwargs)
 
@@ -96,10 +105,11 @@ class Account(models.Model):
         max_digits=constants.DECIMAL_MAX_DIGITS,
         decimal_places=constants.DECIMAL_PLACES,
         verbose_name="Remaining balance",
-        default=0
+        default=0,
+        blank=True
     )
     slug = AutoSlugField(
-        populate_from="description",
+        populate_from="name",
         unique=True,
         max_length=constants.ACCOUNT_MAX_URL,
     )

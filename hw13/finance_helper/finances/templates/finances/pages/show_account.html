@@ -1,0 +1,26 @@
+{% extends 'finances/base.html' %}
+
+{% block content %}
+  {% if transactions %}
+      <div class="row row-cols-4">
+        <div class="col">Description</div>
+        <div class="col">Amount</div>
+        <div class="col">Date</div>
+        <div class="col">Remaining balance</div>
+      </div>
+      <hr>
+    {% for transaction in transactions %}
+      <div class="row row-cols-4">
+        <div class="col">{{ transaction.description }}</div>
+        <div class="col">{{ transaction.amount }}</div>
+        <div class="col">{{ transaction.date }}</div>
+        <div class="col">{{ transaction.balance }}</div>
+      </div>
+      <hr>
+    {% endfor %}
+  {% else %}
+    <h1>You do not have any transactions in this account</h1>
+  {% endif %}
+<a class="btn btn-primary" href="{% url 'finances:add_transaction' acc_url=acc_url %}">Add new</a>
+
+{% endblock %}
