@@ -44,6 +44,8 @@ def show_account(request, acc_url):
         "transactions": transactions,
         "account": account
     }
+    if request.method == "POST":
+        pass
 
     return render(
         request,

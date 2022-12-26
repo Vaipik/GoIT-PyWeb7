@@ -2,6 +2,7 @@
 
 {% block content %}
   {% if transactions %}
+    <form>
       <div class="row row-cols-sm-6 text-center">
         <div class="col text-center">Description</div>
         <div class="col text-center">Amount</div>
@@ -9,6 +10,7 @@
         <div class="col text-center">Category</div>
         <div class="col text-center">Remaining balance</div>
       </div>
+    </form>
       <hr>
     {% for transaction in transactions %}
       <div class="row row-cols-sm-6">

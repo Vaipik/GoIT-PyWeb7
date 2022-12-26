@@ -39,7 +39,7 @@ class Transaction(models.Model):
         verbose_name="Description"
     )
     date = models.DateTimeField(
-        default=datetime.timestamp(),
+        default=datetime.now(),
         verbose_name="Date"
     )
     amount = models.DecimalField(
@@ -70,7 +70,7 @@ class Transaction(models.Model):
     account = models.ForeignKey(
         to="Account",
         on_delete=models.SET_NULL,
-        null=False
+        null=True
     )
 
     class Meta:
