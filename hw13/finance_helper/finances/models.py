@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -37,7 +39,7 @@ class Transaction(models.Model):
         verbose_name="Description"
     )
     date = models.DateTimeField(
-        auto_now_add=True,
+        default=datetime.now(),
         verbose_name="Date"
     )
     amount = models.DecimalField(
@@ -49,7 +51,6 @@ class Transaction(models.Model):
         max_digits=constants.DECIMAL_MAX_DIGITS,
         decimal_places=constants.DECIMAL_PLACES,
         verbose_name="Remaining balance",
-        default=0,
         blank=True,
         null=True
     )
@@ -75,12 +76,18 @@ class Transaction(models.Model):
     class Meta:
         verbose_name = "Transaction"
         verbose_name_plural = "Transactions"
-        ordering = ["-date", "-amount", "-description"]
+        ordering = ["-date"]
 
     def save(self, *args, **kwargs):
+
         self.is_costs = True if self.amount < 0 else False
-        self.account.balance += self.amount
-        self.balance = self.account.balance
+
+        if self.balance is None:
+            self.account.balance += self.amount
+            self.balance = self.account.balance
+
+        else:
+            pass
         self.account.save()  # call save method to account model
         super(Transaction, self).save(*args, **kwargs)
 

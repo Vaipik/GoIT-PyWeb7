@@ -1,0 +1,17 @@
+<div class="col text-center">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="row-sm-4">{{ field }}</div>
+  {% endfor %}
+
+<div class="row sm-4">
+  <label for="categories" class="form-label"> Transaction category
+    <input class="form-control" list="items" id="categories" placeholder="Type to search or write your category" value={{ transaction.category }}>
+      <datalist id="items">
+        {% for category in categories %}
+          <option value={{ category }}>
+        {% endfor %}
+      </datalist>
+  </label>
+</div>
+</div>

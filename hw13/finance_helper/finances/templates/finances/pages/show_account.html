@@ -2,7 +2,7 @@
 
 {% block content %}
   {% if transactions %}
-      <div class="row row-cols-sm-5 text-center">
+      <div class="row row-cols-sm-6 text-center">
         <div class="col text-center">Description</div>
         <div class="col text-center">Amount</div>
         <div class="col text-center">Date</div>
@@ -11,12 +11,23 @@
       </div>
       <hr>
     {% for transaction in transactions %}
-      <div class="row row-cols-sm-5">
-        <div class="col text-center">{{ transaction.description }}</div>
+      <div class="row row-cols-sm-6">
+        <div class="col text-center">
+          <a href="{% url 'finances:edit_transaction' acc_url=acc_url trans_url=transaction.slug %}">
+            {{ transaction.description }}
+          </a>
+        </div>
         <div class="col text-center">{{ transaction.amount }}</div>
-        <div class="col text-center">{{ transaction.date }}</div>
+        <div class="col text-center">{{ transaction.date|date:"d.M.Y H:i:s" }}</div>
         <div class="col text-center">{{ transaction.category.name }}</div>
         <div class="col text-center">{{ transaction.balance }}</div>
+        <div class="col text-center">
+          <a
+            class="btn btn-primary"
+            href="{% url 'finances:delete_transcation' acc_url=transaction.account.slug trans_url=transaction.slug %}"
+          > Delete transaction
+          </a>
+        </div>
       </div>
       <hr>
     {% endfor %}

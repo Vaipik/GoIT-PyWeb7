@@ -1,0 +1,14 @@
+{% extends 'finances/base.html' %}
+
+{% block content %}
+
+  <h1>Editing transaction!!!</h1>
+<form action="{% url 'finances:edit_transaction' acc_url=acc_url trans_url=transaction.slug %}" method="post">
+ {% include "finances/pages/_transaction.html" %}
+
+  <div>
+  <input type="submit" class="btn btn-primary" value="Edit current transaction">
+  </div>
+</form>
+
+{% endblock %}

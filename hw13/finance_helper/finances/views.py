@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404, redirect
 
 from . import forms
@@ -9,7 +11,7 @@ def index(request):
     user = request.user
     context = {}
     if user.is_authenticated:
-        accounts: list[models.Account] = models.Account.objects.filter(user=user).all()
+        accounts = models.Account.objects.filter(user=user).all()
         context["accounts"] = accounts
 
     return render(
@@ -22,7 +24,7 @@ def index(request):
 def add_account(request):
 
     if request.method == "POST":
-        form = forms.AddAccountForm(request.POST)
+        form = forms.AccountForm(request.POST)
         if form.is_valid():
             models.Account(
                 name=form.cleaned_data["name"],
@@ -31,7 +33,7 @@ def add_account(request):
             ).save()
             return redirect("finances:index")
 
-    form = forms.AddAccountForm()
+    form = forms.AccountForm()
     return render(request, "finances/pages/add_account.html", {"form": form})
 
 
@@ -84,7 +86,7 @@ def add_transaction(request, acc_url: str):
 
     form = forms.AddTransactionForm()
     categories = models.Category.objects.all()
-    print(categories)
+
     context = {
         "form": form,
         "categories": categories,
@@ -98,18 +100,41 @@ def add_transaction(request, acc_url: str):
     )
 
 
+def edit_transaction(request, acc_url: str, trans_url: str):
+
+    transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
+    form = forms.EditTransactionForm(instance=transaction)
+
+    if request.method == "POST":
+
+        form = forms.EditTransactionForm(request.POST)
+        if form.is_valid():
+
+            transaction.description = form.cleaned_data["description"]
+            transaction.amount = form.cleaned_data["amount"]
+            transaction.date = form.cleaned_data["date"]
+            transaction.save()
+            return redirect("finances:show_account", acc_url)
+
+    context = {
+        "acc_url": acc_url,
+        "transaction": transaction,
+        "form": form,
+        "categories": models.Category.objects.all(),
+        "account": models.Account.objects.get(slug=acc_url)
+    }
+    return render(request, "finances/pages/edit_transaction.html", context)
+
+
 def check_category(name: str):
     category = models.Category.objects.filter(name=name).first()
     return category
 
 
-def delete_transaction(request, trans_url):
-    pass
-
-
-def edit_transaction(request, trans_url):
-    pass
-
+def delete_transaction(request, acc_url, trans_url):
+    transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
+    transaction.delete()
+    return redirect("finances:show_account", acc_url=acc_url)
 
 def get_transaction(request, trans_url):
     transaction = get_object_or_404(models.Transaction, slug=trans_url, user=request.user)
