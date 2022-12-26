@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 
 from . import forms
 from . import models
@@ -68,14 +66,16 @@ def add_transaction(request, acc_url: str):
         if form.is_valid():
             description = form.cleaned_data["description"]
             amount = form.cleaned_data["amount"]
-            category = form.data.get("category", "No category")
 
+            category = request.POST.get("category")
+            category = "No category" if not category else category
             checked_category = check_category(category)
             if checked_category is None:
                 category = models.Category(name=category)
                 category.save()
             else:
                 category = checked_category
+
             category.transaction_set.create(
                 description=description,
                 amount=amount,
@@ -86,7 +86,7 @@ def add_transaction(request, acc_url: str):
 
     form = forms.AddTransactionForm()
     categories = models.Category.objects.all()
-
+    print(categories)
     context = {
         "form": form,
         "categories": categories,
@@ -127,15 +127,10 @@ def edit_transaction(request, acc_url: str, trans_url: str):
 
 
 def check_category(name: str):
-    category = models.Category.objects.filter(name=name).first()
-    return category
+    return models.Category.objects.filter(name=name).first()
 
 
 def delete_transaction(request, acc_url, trans_url):
     transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
     transaction.delete()
     return redirect("finances:show_account", acc_url=acc_url)
-
-def get_transaction(request, trans_url):
-    transaction = get_object_or_404(models.Transaction, slug=trans_url, user=request.user)
-    return transaction

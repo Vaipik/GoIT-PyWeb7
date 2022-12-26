@@ -39,7 +39,7 @@ class Transaction(models.Model):
         verbose_name="Description"
     )
     date = models.DateTimeField(
-        default=datetime.now(),
+        default=datetime.timestamp(),
         verbose_name="Date"
     )
     amount = models.DecimalField(
@@ -52,7 +52,7 @@ class Transaction(models.Model):
         decimal_places=constants.DECIMAL_PLACES,
         verbose_name="Remaining balance",
         blank=True,
-        null=True
+        null=True,
     )
     is_costs = models.BooleanField(
         verbose_name="Costs"
@@ -69,7 +69,7 @@ class Transaction(models.Model):
     )
     account = models.ForeignKey(
         to="Account",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.SET_NULL,
         null=False
     )
 
@@ -81,20 +81,28 @@ class Transaction(models.Model):
     def save(self, *args, **kwargs):
 
         self.is_costs = True if self.amount < 0 else False
-
-        if self.balance is None:
-            self.account.balance += self.amount
-            self.balance = self.account.balance
-
-        else:
-            pass
+        self.__balance_editing()
         self.account.save()  # call save method to account model
         super(Transaction, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+
         self.account.balance -= self.amount
-        self.account.save()  # call save method to account model
+        self.balance = self.account.balance
+        self.account.save()  # call save me thod to account model
         super(Transaction, self).delete(*args, **kwargs)
+
+    def __balance_editing(self):
+
+        if self.balance is None:
+            self.account.balance += self.amount
+
+        else:
+            previous_amount = Transaction.objects.get(pk=self.id).amount
+            print(f"Prev: {previous_amount}, curr: {self.amount}")
+            self.account.balance = self.account.balance - previous_amount + self.amount
+
+        self.balance = self.account.balance
 
     def __str__(self):
         return self.description if len(self.description) < 30 else self.description[:30] + "..."

@@ -6,7 +6,7 @@
 
 <div class="row sm-4">
   <label for="categories" class="form-label"> Transaction category
-    <input class="form-control" list="items" id="categories" placeholder="Type to search or write your category" value={{ transaction.category }}>
+    <input class="form-control" list="items" placeholder="Type to search or write your category" name="category" value={{ transaction.category }}>
       <datalist id="items">
         {% for category in categories %}
           <option value={{ category }}>
