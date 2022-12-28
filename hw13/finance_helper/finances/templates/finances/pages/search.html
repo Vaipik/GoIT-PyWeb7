@@ -1,0 +1,12 @@
+{% extends 'finances/base.html' %}
+
+
+{% block content %}
+
+  {{ data }}
+
+  {% for transaction in transactions %}:
+    <div class="row">{{ transaction }}</div>
+  {% endfor %}
+
+{% endblock %}

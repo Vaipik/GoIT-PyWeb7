@@ -98,7 +98,7 @@ class Transaction(models.Model):
             self.account.balance += self.amount
 
         else:
-            previous_amount = Transaction.objects.get(pk=self.id).amount
+            previous_amount = Transaction.objects.select_related("account").get(pk=self.id).amount
             print(f"Prev: {previous_amount}, curr: {self.amount}")
             self.account.balance = self.account.balance - previous_amount + self.amount
 

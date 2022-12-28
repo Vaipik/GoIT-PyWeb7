@@ -3,13 +3,26 @@
 {% block content %}
   {% if transactions %}
     <form>
-      <div class="row row-cols-sm-6 text-center">
+      <div class="row row-cols-6 text-center mt-3">
+        <div class="col">
+          <input class="btn btn-primary" type="submit" value="Description" name="order_by">
+        </div>
 
-        <input class="btn btn-primary" type="submit" value="Description" name="order_by">
-        <input class="btn btn-primary" type="submit" value="Amount" name="order_by">
-        <input class="btn btn-primary" type="submit" value="Date" name="order_by">
-        <input class="btn btn-primary" type="submit" value="Category" name="order_by">
-        <input class="btn btn-primary" type="submit" value="Remaining balance" name="order_by">
+        <div>
+          <input class="btn btn-primary " type="submit" value="Amount" name="order_by">
+        </div>
+
+        <div class="col">
+          <input class="btn btn-primary" type="submit" value="Date" name="order_by">
+        </div>
+
+        <div class="col">
+          <input class="btn btn-primary" type="submit" value="Category" name="order_by">
+        </div>
+
+        <div class="col">
+          <input class="btn btn-primary" type="submit" value="Remaining balance" name="order_by">
+        </div>
 
       </div>
     </form>

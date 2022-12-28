@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
+from django.db.models import Q
 
 from . import forms
 from . import models
 from .libs.ordering import order_by
+from .libs.search_parser import parse_search_request
 
 
 def index(request):
@@ -157,3 +159,27 @@ def delete_transaction(request, acc_url, trans_url):
 
 def check_category(name: str):
     return models.Category.objects.filter(name=name).first()
+
+
+def search(request):
+    request_data = request.GET.get("search")
+    letters, numbers = parse_search_request(request_data)
+    user = request.user
+    print(f"letters: {letters}\nnumbers: {numbers}")
+    total = 11
+    transactions = models.Transaction.objects.filter(
+        Q(description__contains="a") |
+        Q(amount__in=numbers),
+        # Q(category__name__in=letters)
+        account__user=user
+    )
+
+    # clauses = (Q(address__icontains=p) for p in postcodes)
+    # query = reduce(operator.or_, clauses)
+    # site = SiteData.objects.filter(query)
+    print(transactions)
+    context = {
+        "data": [letters, numbers],
+        "transactions": transactions
+    }
+    return render(request, "finances/pages/search.html", context)

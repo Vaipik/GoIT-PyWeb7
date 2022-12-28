@@ -3,7 +3,7 @@
 {% block content %}
 
   {% if accounts %}
-    <h1>This is your accounts dear user!</h1>
+    <h1>Welcome dear, {{ user.username }}!</h1>
     <div class="row">
       {% for account in accounts %}
         <div class="col">
