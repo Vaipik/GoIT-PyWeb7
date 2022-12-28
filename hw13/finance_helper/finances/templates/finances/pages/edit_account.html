@@ -1,0 +1,10 @@
+{% extends 'finances/base.html' %}
+
+{% block content %}
+<h1>Editing account</h1>
+<form action="{% url 'finances:edit_account' acc_url=account.slug %}" method="post">
+  {% csrf_token %}
+  {{ form.name }}
+  <input class="btn btn-primary" type="submit" value="Edit account">
+</form>
+{% endblock %}

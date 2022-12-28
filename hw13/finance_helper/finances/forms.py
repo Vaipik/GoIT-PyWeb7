@@ -39,13 +39,21 @@ class EditTransactionForm(forms.ModelForm):
         model = models.Transaction
         fields = ["description", "amount", "date"]
 
-class AccountForm(forms.Form):
+
+class AccountForm(forms.ModelForm):
     name = forms.CharField(
         max_length=constants.ACCOUNT_MAX_LENGTH,
         min_length=constants.ACCOUNT_MIN_LENGTH,
-        label="Enter account name"
+        label="Enter account name",
+        widget=forms.TextInput(attrs={"class": "form-control"})
+
     )
     balance = forms.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
         decimal_places=constants.DECIMAL_PLACES,
+        widget=forms.NumberInput(attrs={"class": "form-control"})
     )
+
+    class Meta:
+        model = models.Account
+        fields = ["name", "balance"]

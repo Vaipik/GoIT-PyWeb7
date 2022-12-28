@@ -4,11 +4,13 @@
   {% if transactions %}
     <form>
       <div class="row row-cols-sm-6 text-center">
-        <div class="col text-center">Description</div>
-        <div class="col text-center">Amount</div>
-        <div class="col text-center">Date</div>
-        <div class="col text-center">Category</div>
-        <div class="col text-center">Remaining balance</div>
+
+        <input class="btn btn-primary" type="submit" value="Description" name="order_by">
+        <input class="btn btn-primary" type="submit" value="Amount" name="order_by">
+        <input class="btn btn-primary" type="submit" value="Date" name="order_by">
+        <input class="btn btn-primary" type="submit" value="Category" name="order_by">
+        <input class="btn btn-primary" type="submit" value="Remaining balance" name="order_by">
+
       </div>
     </form>
       <hr>

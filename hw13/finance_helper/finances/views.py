@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 
 from . import forms
 from . import models
+from .libs.ordering import order_by
 
 
 def index(request):
@@ -35,29 +36,49 @@ def add_account(request):
     return render(request, "finances/pages/add_account.html", {"form": form})
 
 
+def edit_account(request, acc_url: str):
+    account = models.Account.objects.get(slug=acc_url)
+    form = forms.AccountForm(instance=account)
+    context = {"account": account, "form": form}
+
+    if request.method == "POST":
+        form = forms.AccountForm(request.POST)
+        if form.is_valid():
+            account.name = form.cleaned_data["name"]
+            account.balance = form.cleaned_data["balance"]
+            account.save()
+            return redirect("finances:show_account", acc_url=acc_url)
+
+        context["form"] = form
+
+    return render(request, "finances/pages/edit_account.html", context)
+
+
+def delete_account(request, acc_url: str):
+    if request.method == "POST":
+        models.Account.objects.get(slug=acc_url).delete()
+        return redirect("finances:index")
+
+
 def show_account(request, acc_url):
 
     transactions = models.Transaction.objects.filter(account__slug=acc_url).all()
-    account = transactions.first()
+    account = models.Account.objects.get(slug=acc_url)
+
+    order_by_key = request.GET.get("order_by")
+    ordered_data = order_by(order_by_key)
+
     context = {
         "acc_url": acc_url,
-        "transactions": transactions,
+        "transactions": ordered_data(transactions),
         "account": account
     }
-    if request.method == "POST":
-        pass
 
     return render(
         request,
         "finances/pages/show_account.html",
         context
     )
-
-
-def delete_account(request, acc_url: str):
-    if request.method == "POST":
-        pass
-        # account = models.Account.objects.get(name=)
 
 
 def add_transaction(request, acc_url: str):
@@ -128,11 +149,11 @@ def edit_transaction(request, acc_url: str, trans_url: str):
     return render(request, "finances/pages/edit_transaction.html", context)
 
 
-def check_category(name: str):
-    return models.Category.objects.filter(name=name).first()
-
-
 def delete_transaction(request, acc_url, trans_url):
     transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
     transaction.delete()
     return redirect("finances:show_account", acc_url=acc_url)
+
+
+def check_category(name: str):
+    return models.Category.objects.filter(name=name).first()
