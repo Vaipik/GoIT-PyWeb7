@@ -1,14 +1,11 @@
-import decimal
-
-
-def parse_search_request(data: str) -> tuple[list[str], list[decimal.Decimal]]:
+def parse_search_request(data: str) -> tuple[list[str], list[float]]:
     """
 
     :param data: search field input data
-    :return: letters and numbers tuples. Each tuple contains string
+    :return: One tuple contains two lists.
     """
     numbers = []
-    letters = []
+    words = []
 
     for item in data.split():
 
@@ -18,7 +15,6 @@ def parse_search_request(data: str) -> tuple[list[str], list[decimal.Decimal]]:
             pass
 
         if item.isalpha():
-            letters.append(item)
-    leters = ' '.join(letters)
+            words.append(item)
 
-    return letters, numbers
+    return words, numbers

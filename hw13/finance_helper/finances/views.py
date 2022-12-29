@@ -1,3 +1,4 @@
+import django.db.models
 from django.shortcuts import render, redirect
 from django.db.models import Q
 
@@ -163,23 +164,23 @@ def check_category(name: str):
 
 def search(request):
     request_data = request.GET.get("search")
-    letters, numbers = parse_search_request(request_data)
+    words, numbers = parse_search_request(request_data)
     user = request.user
-    print(f"letters: {letters}\nnumbers: {numbers}")
-    total = 11
-    transactions = models.Transaction.objects.filter(
-        Q(description__contains="a") |
-        Q(amount__in=numbers),
-        # Q(category__name__in=letters)
-        account__user=user
-    )
+    context = {}
 
-    # clauses = (Q(address__icontains=p) for p in postcodes)
-    # query = reduce(operator.or_, clauses)
-    # site = SiteData.objects.filter(query)
-    print(transactions)
-    context = {
-        "data": [letters, numbers],
-        "transactions": transactions
-    }
+    if numbers:
+        context["transactions"] = models.Transaction.objects.filter(
+            amount__in=numbers,
+            account__user=user
+        )
+
+    if words:
+
+        for word in words:
+            query: django.db.models.QuerySet = models.Transaction.objects.filter(
+                description__contains=word,
+                account__user=user
+            )
+            context["transactions"] = context.get("transactions", query) | query
+
     return render(request, "finances/pages/search.html", context)
