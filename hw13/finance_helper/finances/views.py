@@ -1,6 +1,5 @@
-import django.db.models
+from django.db.models import QuerySet, Subquery, OuterRef
 from django.shortcuts import render, redirect
-from django.db.models import Q
 
 from . import forms
 from . import models
@@ -13,8 +12,22 @@ def index(request):
     user = request.user
     context = {}
     if user.is_authenticated:
-        accounts = models.Account.objects.filter(user=user).all()
-        context["accounts"] = accounts
+        user_data: QuerySet = models.Transaction.objects.prefetch_related("account", "category").filter(account__user=user)
+        accounts = models.Account.objects.filter(user=user)
+
+        filled_accounts = {}
+        for tr in user_data:
+            filled_accounts.setdefault(tr.account, []).append(tr)
+
+        for acc, trans in filled_accounts.items():
+            for t in trans:
+                print(acc, t.date, t.description)
+
+        context = {
+            "accounts": accounts,
+            "categories": {tr.category for tr in user_data},
+            "filled_accounts": filled_accounts,
+        }
 
     return render(
         request,
@@ -177,7 +190,7 @@ def search(request):
     if words:
 
         for word in words:
-            query: django.db.models.QuerySet = models.Transaction.objects.filter(
+            query: QuerySet = models.Transaction.objects.filter(
                 description__contains=word,
                 account__user=user
             )

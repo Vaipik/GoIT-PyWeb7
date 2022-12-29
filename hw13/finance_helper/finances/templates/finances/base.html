@@ -28,25 +28,10 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-2 text-center border border-5">
-      This is sidebar left
-      <br>
-      This is sidebar left
-      <br>
-      This is sidebar left
-      <br>
-      This is sidebar left
-      <br>
-      This is sidebar left
-      <br>
-      This is sidebar left
-      <br>
-      This is sidebar left
-      <br>
-
-
+      {% include 'finances/_sidebar_left.html' %}
     </div>
 
-    <div class="col-sm-8 text-center mt-5">
+    <div class="col-sm-8 text-center mt-3">
 
       {% block content %}
       {% endblock %}
@@ -54,7 +39,7 @@
 
     <div class="col-sm-2 text-center border border-5">
     <aside class="bd-aside bsticky-xl-top text-muted align-self-start mb-3 mb-xl-5 px-2">
-      {% include "finances/_sidebar.html" %}
+      {% include "finances/_sidebar_right.html" %}
     </aside>
     </div>
   </div>
