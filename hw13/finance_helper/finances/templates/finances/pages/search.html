@@ -3,13 +3,13 @@
 
 {% block content %}
 
-  {% if transactions %}
+  {% if trans_by_acc %}
 
     <div class="container-fluid text-">
-    {% for transaction in transactions %}
+    {% for account, transactions in trans_by_acc.items %}
       <div class="col text-start text-bg-dark border">
         <h3>
-        <a class="list-group-item ps-3" href="{% url 'finances:show_account' acc_url=transaction.account.slug %}">{{ transaction.account.name }}</a>
+        <a class="list-group-item ps-3" href="{% url 'finances:show_account' acc_url=account.slug %}">{{ account }}</a>
         </h3>
       </div>
       <div class="col border border-2">
@@ -25,16 +25,19 @@
 
         <div class="col text-center ">
 
+            {% for transaction in transactions|slice:"5" %}
+              <div class="row row-cols-sm-5 ">
+                <div class="col text-center">{{ transaction.description }}</div>
+                <div class="col text-center">{{ transaction.amount }}</div>
+                <div class="col text-center">{{ transaction.date|date:"d E, Y H:i:s" }}</div>
+                <div class="col text-center">{{ transaction.category.name }}</div>
+                <div class="col text-center">{{ transaction.balance }}</div>
+              </div>
+              {% if transaction != transactions|last %}
+                <hr>
+              {% endif %}
 
-            <div class="row row-cols-sm-5 ">
-              <div class="col text-center">{{ transaction.description }}</div>
-              <div class="col text-center">{{ transaction.amount }}</div>
-              <div class="col text-center">{{ transaction.date|date:"d E, Y H:i:s" }}</div>
-              <div class="col text-center">{{ transaction.category.name }}</div>
-              <div class="col text-center">{{ transaction.balance }}</div>
-            </div>
-              <hr>
-
+            {% endfor %}
           </div>
       </div>
 
@@ -43,6 +46,7 @@
     <h1>Greetings! Create new account to control your finances!</h1>
   {% endif %}
 </div>
+
 
 
 {% endblock %}

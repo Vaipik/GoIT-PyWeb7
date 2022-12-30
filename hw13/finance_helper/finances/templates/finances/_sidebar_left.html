@@ -1,12 +1,10 @@
 <h2 class="h6 pt-4 pb-3 mb-4 border-bottom">Your categories</h2>
-<nav class="small" id="toc">
   <ul class="list-unstyled">
     {% for category in categories %}
     <li class="my-2">
-      <a href="{% url 'finances:index' %}" class="btn d-inline-flex align-items-center collapsed border-0" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#contents-collapse" aria-controls="contents-collapse">
+      <a href="{% url 'finances:show_transactions_by_category' cat_url=category.slug %}" class="btn d-inline-flex align-items-center collapsed border-0" aria-expanded="false" aria-controls="contents-collapse">
         {{ category }}
       </a>
     </li>
     {% endfor %}
   </ul>
-  </nav>

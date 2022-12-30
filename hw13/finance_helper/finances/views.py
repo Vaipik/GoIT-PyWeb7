@@ -1,4 +1,4 @@
-from django.db.models import QuerySet, Subquery, OuterRef
+from django.db.models import QuerySet
 from django.shortcuts import render, redirect
 
 from . import forms
@@ -34,6 +34,9 @@ def index(request):
 
 
 def add_account(request):
+    user = request.user
+    accounts = models.Account.objects.filter(user=user)
+    transactions = models.Transaction.objects.select_related("category").filter(account__user=user)
     if request.method == "POST":
         form = forms.AccountForm(request.POST)
         if form.is_valid():
@@ -45,13 +48,22 @@ def add_account(request):
             return redirect("finances:show_account", acc_url=account.slug)
 
     form = forms.AccountForm()
-    return render(request, "finances/pages/add_account.html", {"form": form})
+    context = {
+        "form": form,
+        "categories": {tr.category for tr in transactions},
+        "accounts": accounts
+    }
+    return render(request, "finances/pages/add_account.html", context)
 
 
 def edit_account(request, acc_url: str):
     account = models.Account.objects.get(slug=acc_url)
+
+    user = request.user
+    accounts = models.Account.objects.filter(user=user)
+    transactions = models.Transaction.objects.select_related("category").filter(account__user=user)
+
     form = forms.AccountForm(instance=account)
-    context = {"account": account, "form": form}
 
     if request.method == "POST":
         form = forms.AccountForm(request.POST)
@@ -61,7 +73,12 @@ def edit_account(request, acc_url: str):
             account.save()
             return redirect("finances:show_account", acc_url=acc_url)
 
-        context["form"] = form
+    context = {
+        "account": account,
+        "form": form,
+        "accounts": accounts,
+        "categories": {tr.category for tr in transactions},
+    }
 
     return render(request, "finances/pages/edit_account.html", context)
 
@@ -73,16 +90,19 @@ def delete_account(request, acc_url: str):
 
 
 def show_account(request, acc_url):
-    transactions = models.Transaction.objects.filter(account__slug=acc_url).all()
-    account = models.Account.objects.get(slug=acc_url)
+    user = request.user
+    transactions = models.Transaction.objects.select_related("category").filter(account__slug=acc_url)
+    accounts = models.Account.objects.filter(user=user)
+    account = accounts.get(slug=acc_url)
 
     order_by_key = request.GET.get("order_by")
     ordered_data = order_by(order_by_key)
 
     context = {
-        "acc_url": acc_url,
         "transactions": ordered_data(transactions),
-        "account": account
+        "account": account,
+        "accounts": accounts,
+        "categories": {tr.category for tr in transactions}
     }
 
     return render(
@@ -93,7 +113,11 @@ def show_account(request, acc_url):
 
 
 def add_transaction(request, acc_url: str):
-    account: models.Account = models.Account.objects.get(slug=acc_url)
+    user = request.user
+    transactions = models.Transaction.objects.select_related("category").filter(account__slug=acc_url)
+    accounts = models.Account.objects.filter(user=user)
+    account = accounts.get(slug=acc_url)
+
     if request.method == "POST":
         form = forms.AddTransactionForm(request.POST)
         if form.is_valid():
@@ -118,11 +142,12 @@ def add_transaction(request, acc_url: str):
             return redirect("finances:show_account", acc_url=acc_url)
 
     form = forms.AddTransactionForm()
-    categories = models.Category.objects.all()
+
     context = {
         "form": form,
-        "categories": categories,
-        "account": account
+        "account": account,
+        "accounts": accounts,
+        "categories": {tr.category for tr in transactions}
     }
 
     return render(
@@ -136,6 +161,11 @@ def edit_transaction(request, acc_url: str, trans_url: str):
     transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
     form = forms.EditTransactionForm(instance=transaction)
 
+    user = request.user
+    transactions = models.Transaction.objects.select_related("category").filter(account__slug=acc_url)
+    accounts = models.Account.objects.filter(user=user)
+    account = accounts.get(slug=acc_url)
+
     if request.method == "POST":
 
         form = forms.EditTransactionForm(request.POST)
@@ -147,11 +177,11 @@ def edit_transaction(request, acc_url: str, trans_url: str):
             return redirect("finances:show_account", acc_url)
 
     context = {
-        "acc_url": acc_url,
         "transaction": transaction,
         "form": form,
-        "categories": models.Category.objects.all(),
-        "account": models.Account.objects.get(slug=acc_url)
+        "categories": {tr.category for tr in transactions},
+        "account": account,
+        "accounts": accounts
     }
     return render(request, "finances/pages/edit_transaction.html", context)
 
@@ -169,10 +199,15 @@ def check_category(name: str):
 def show_transactions_by_category(request, cat_url):
     user = request.user
     transactions = models.Transaction.objects.filter(account__user=user, category__slug=cat_url)
+    trans_by_acc = {}
+    for transaction in transactions:
+        trans_by_acc.setdefault(
+            transaction.account, []
+        ).append(transaction)
 
     context = {
         "title": transactions[0].category.name,
-        "transactions": transactions
+        "trans_by_acc": trans_by_acc
     }
     return render(request, "finances/pages/trans_by_cat.html", context)
 
@@ -185,21 +220,26 @@ def search(request):
     transactions: QuerySet = models.Transaction.objects \
         .filter(account__user=user) \
         .select_related("category")
-    print(numbers)
+    # Dictionary with account as key and set of matched transactions as value
+    matched_transactions = {}
     if numbers:
-        matched_transactions = {
-            transaction for transaction in transactions if transaction.amount in numbers
-        }
-        context["transactions"] = matched_transactions
+        for transaction in transactions:
+            if transaction.amount in numbers:
+                matched_transactions.setdefault(
+                    transaction.account, set()  # set is required to prevent doubling
+                ).add(transaction)
 
     if words:
-        matched_transactions = set()
+
         for word in words:
             for transaction in transactions:
                 if word in transaction.description:
-                    matched_transactions.add(transaction)
+                    matched_transactions.setdefault(
+                        transaction.account, set()  # set is required to prevent doubling
+                    ).add(transaction)
 
-        if context["transactions"]:
-            context["transactions"] = context["transactions"] | matched_transactions
-    print(context)
+    for acc in matched_transactions:
+        matched_transactions[acc] = list(matched_transactions.get(acc))  # convert set to list
+    context["trans_by_acc"] = matched_transactions
+
     return render(request, "finances/pages/search.html", context)

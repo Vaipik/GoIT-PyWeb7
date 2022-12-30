@@ -29,9 +29,9 @@
     <hr>
     {% for transaction in transactions %}
       <div class="row row-cols-sm-6">
-        <div class="col text-center">
-          <a class="text-decoration-none btn btn-outline-dark"
-             href="{% url 'finances:edit_transaction' acc_url=acc_url trans_url=transaction.slug %}">
+        <div class="col text-center mx-auto ">
+          <a class="text-decoration-none btn btn-outline-dark btn-sm"
+             href="{% url 'finances:edit_transaction' acc_url=account.slug trans_url=transaction.slug %}">
             {{ transaction.description }}
           </a>
         </div>
@@ -41,8 +41,8 @@
         <div class="col text-center">{{ transaction.balance }}</div>
         <div class="col text-center">
           <a
-                  class="btn btn-dark"
-                  href="{% url 'finances:delete_transcation' acc_url=transaction.account.slug trans_url=transaction.slug %}"
+             class="btn btn-dark"
+             href="{% url 'finances:delete_transcation' acc_url=account.slug trans_url=transaction.slug %}"
           > Delete transaction
           </a>
         </div>
@@ -52,6 +52,6 @@
   {% else %}
     <h1>You do not have any transactions in this account</h1>
   {% endif %}
-  <a class="btn btn-dark" href="{% url 'finances:add_transaction' acc_url=acc_url %}">Add new</a>
+  <a class="btn btn-dark" href="{% url 'finances:add_transaction' acc_url=account.slug %}">Add new</a>
 
 {% endblock %}
