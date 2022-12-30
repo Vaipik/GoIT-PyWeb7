@@ -12,30 +12,32 @@
         </h3>
       </div>
       <div class="col border border-2">
-      <div class="row row-cols-5 text-center">
-        <div class="col">Description</div>
-        <div class="col">Amount</div>
-        <div class="col">Date</div>
-        <div class="col">Category</div>
-        <div class="col">Remaining balance</div>
-      </div>
-      <hr>
+
+        <div class="row row-cols-5 text-center">
+          <div class="col">Description</div>
+          <div class="col">Amount</div>
+          <div class="col">Date</div>
+          <div class="col">Category</div>
+          <div class="col">Remaining balance</div>
+        </div>
+        <hr>
 
         <div class="col text-center ">
 
-          {% for transaction in transactions|slice:"-5:" %}
-            <div class="row row-cols-sm-5 ">
-              <div class="col text-center">{{ transaction.description }}</div>
-              <div class="col text-center">{{ transaction.amount }}</div>
-              <div class="col text-center">{{ transaction.date|date:"d E, Y H:i:s" }}</div>
-              <div class="col text-center">{{ transaction.category.name }}</div>
-              <div class="col text-center">{{ transaction.balance }}</div>
-            </div>
-            {% if transaction != transactions|last %}
-              <hr>
-            {% endif %}
-          {% endfor %}
-        </div>
+            {% for transaction in transactions|slice:"5" %}
+              <div class="row row-cols-sm-5 ">
+                <div class="col text-center">{{ transaction.description }}</div>
+                <div class="col text-center">{{ transaction.amount }}</div>
+                <div class="col text-center">{{ transaction.date|date:"d E, Y H:i:s" }}</div>
+                <div class="col text-center">{{ transaction.category.name }}</div>
+                <div class="col text-center">{{ transaction.balance }}</div>
+              </div>
+              {% if transaction != transactions|last %}
+                <hr>
+              {% endif %}
+
+            {% endfor %}
+          </div>
       </div>
 
       {% endfor %}

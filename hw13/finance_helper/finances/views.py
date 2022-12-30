@@ -8,24 +8,21 @@ from .libs.search_parser import parse_search_request
 
 
 def index(request):
-
     user = request.user
     context = {}
     if user.is_authenticated:
-        user_data: QuerySet = models.Transaction.objects.prefetch_related("account", "category").filter(account__user=user)
+
         accounts = models.Account.objects.filter(user=user)
-
+        transactions = models.Transaction.objects.prefetch_related("category", "account").filter(account__user=user)
         filled_accounts = {}
-        for tr in user_data:
-            filled_accounts.setdefault(tr.account, []).append(tr)
-
-        for acc, trans in filled_accounts.items():
-            for t in trans:
-                print(acc, t.date, t.description)
+        for transaction in transactions:
+            filled_accounts.setdefault(
+                transaction.account, []
+            ).append(transaction)
 
         context = {
             "accounts": accounts,
-            "categories": {tr.category for tr in user_data},
+            "categories": {tr.category for tr in transactions},
             "filled_accounts": filled_accounts,
         }
 
@@ -37,16 +34,15 @@ def index(request):
 
 
 def add_account(request):
-
     if request.method == "POST":
         form = forms.AccountForm(request.POST)
         if form.is_valid():
-            models.Account(
+            account = models.Account(
                 name=form.cleaned_data["name"],
-                balance=form.cleaned_data["balance"],
                 user=request.user
-            ).save()
-            return redirect("finances:index")
+            )
+            account.save()
+            return redirect("finances:show_account", acc_url=account.slug)
 
     form = forms.AccountForm()
     return render(request, "finances/pages/add_account.html", {"form": form})
@@ -77,7 +73,6 @@ def delete_account(request, acc_url: str):
 
 
 def show_account(request, acc_url):
-
     transactions = models.Transaction.objects.filter(account__slug=acc_url).all()
     account = models.Account.objects.get(slug=acc_url)
 
@@ -98,7 +93,6 @@ def show_account(request, acc_url):
 
 
 def add_transaction(request, acc_url: str):
-
     account: models.Account = models.Account.objects.get(slug=acc_url)
     if request.method == "POST":
         form = forms.AddTransactionForm(request.POST)
@@ -125,7 +119,6 @@ def add_transaction(request, acc_url: str):
 
     form = forms.AddTransactionForm()
     categories = models.Category.objects.all()
-    print(categories)
     context = {
         "form": form,
         "categories": categories,
@@ -140,7 +133,6 @@ def add_transaction(request, acc_url: str):
 
 
 def edit_transaction(request, acc_url: str, trans_url: str):
-
     transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
     form = forms.EditTransactionForm(instance=transaction)
 
@@ -148,7 +140,6 @@ def edit_transaction(request, acc_url: str, trans_url: str):
 
         form = forms.EditTransactionForm(request.POST)
         if form.is_valid():
-
             transaction.description = form.cleaned_data["description"]
             transaction.amount = form.cleaned_data["amount"]
             transaction.date = form.cleaned_data["date"]
@@ -175,25 +166,40 @@ def check_category(name: str):
     return models.Category.objects.filter(name=name).first()
 
 
+def show_transactions_by_category(request, cat_url):
+    user = request.user
+    transactions = models.Transaction.objects.filter(account__user=user, category__slug=cat_url)
+
+    context = {
+        "title": transactions[0].category.name,
+        "transactions": transactions
+    }
+    return render(request, "finances/pages/trans_by_cat.html", context)
+
+
 def search(request):
     request_data = request.GET.get("search")
     words, numbers = parse_search_request(request_data)
     user = request.user
     context = {}
-
+    transactions: QuerySet = models.Transaction.objects \
+        .filter(account__user=user) \
+        .select_related("category")
+    print(numbers)
     if numbers:
-        context["transactions"] = models.Transaction.objects.filter(
-            amount__in=numbers,
-            account__user=user
-        )
+        matched_transactions = {
+            transaction for transaction in transactions if transaction.amount in numbers
+        }
+        context["transactions"] = matched_transactions
 
     if words:
-
+        matched_transactions = set()
         for word in words:
-            query: QuerySet = models.Transaction.objects.filter(
-                description__contains=word,
-                account__user=user
-            )
-            context["transactions"] = context.get("transactions", query) | query
+            for transaction in transactions:
+                if word in transaction.description:
+                    matched_transactions.add(transaction)
 
+        if context["transactions"]:
+            context["transactions"] = context["transactions"] | matched_transactions
+    print(context)
     return render(request, "finances/pages/search.html", context)

@@ -5,43 +5,44 @@
     <form>
       <div class="row row-cols-6 text-center mt-3">
         <div class="col">
-          <input class="btn btn-primary" type="submit" value="Description" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Description" name="order_by">
         </div>
 
         <div>
-          <input class="btn btn-primary " type="submit" value="Amount" name="order_by">
+          <input class="btn btn-dark " type="submit" value="Amount" name="order_by">
         </div>
 
         <div class="col">
-          <input class="btn btn-primary" type="submit" value="Date" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Date" name="order_by">
         </div>
 
         <div class="col">
-          <input class="btn btn-primary" type="submit" value="Category" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Category" name="order_by">
         </div>
 
         <div class="col">
-          <input class="btn btn-primary" type="submit" value="Remaining balance" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Remaining balance" name="order_by">
         </div>
 
       </div>
     </form>
-      <hr>
+    <hr>
     {% for transaction in transactions %}
       <div class="row row-cols-sm-6">
         <div class="col text-center">
-          <a href="{% url 'finances:edit_transaction' acc_url=acc_url trans_url=transaction.slug %}">
+          <a class="text-decoration-none btn btn-outline-dark"
+             href="{% url 'finances:edit_transaction' acc_url=acc_url trans_url=transaction.slug %}">
             {{ transaction.description }}
           </a>
         </div>
         <div class="col text-center">{{ transaction.amount }}</div>
-        <div class="col text-center">{{ transaction.date|date:"d.M.Y H:i:s" }}</div>
+        <div class="col text-center">{{ transaction.date|date:"d E, Y H:i:s" }}</div>
         <div class="col text-center">{{ transaction.category.name }}</div>
         <div class="col text-center">{{ transaction.balance }}</div>
         <div class="col text-center">
           <a
-            class="btn btn-primary"
-            href="{% url 'finances:delete_transcation' acc_url=transaction.account.slug trans_url=transaction.slug %}"
+                  class="btn btn-dark"
+                  href="{% url 'finances:delete_transcation' acc_url=transaction.account.slug trans_url=transaction.slug %}"
           > Delete transaction
           </a>
         </div>
@@ -51,6 +52,6 @@
   {% else %}
     <h1>You do not have any transactions in this account</h1>
   {% endif %}
-<a class="btn btn-primary" href="{% url 'finances:add_transaction' acc_url=acc_url %}">Add new</a>
+  <a class="btn btn-dark" href="{% url 'finances:add_transaction' acc_url=acc_url %}">Add new</a>
 
 {% endblock %}

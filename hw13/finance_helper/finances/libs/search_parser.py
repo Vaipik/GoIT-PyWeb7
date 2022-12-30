@@ -1,4 +1,7 @@
-def parse_search_request(data: str) -> tuple[list[str], list[float]]:
+from decimal import Decimal, InvalidOperation
+
+
+def parse_search_request(data: str) -> tuple[list[str], list[Decimal]]:
     """
 
     :param data: search field input data
@@ -10,8 +13,8 @@ def parse_search_request(data: str) -> tuple[list[str], list[float]]:
     for item in data.split():
 
         try:
-            numbers.append(float(item))
-        except ValueError:
+            numbers.append(Decimal(item))
+        except InvalidOperation:
             pass
 
         if item.isalpha():

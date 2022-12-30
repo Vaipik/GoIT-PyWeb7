@@ -4,7 +4,7 @@
 
   <h1>Adding new transaction!!!</h1>
 <form action="{% url 'finances:add_transaction' acc_url=account.slug %}" method="post">
- {% include "finances/pages/_transaction.html" %}
+ {% include "finances/pages/_adding_transaction.html" %}
   <div>
   <input type="submit" class="btn btn-primary" value="Add new transaction">
   </div>

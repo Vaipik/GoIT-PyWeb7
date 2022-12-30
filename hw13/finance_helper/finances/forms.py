@@ -48,12 +48,7 @@ class AccountForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"class": "form-control"})
 
     )
-    balance = forms.DecimalField(
-        max_digits=constants.DECIMAL_MAX_DIGITS,
-        decimal_places=constants.DECIMAL_PLACES,
-        widget=forms.NumberInput(attrs={"class": "form-control"})
-    )
 
     class Meta:
         model = models.Account
-        fields = ["name", "balance"]
+        fields = ["name"]

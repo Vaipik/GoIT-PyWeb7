@@ -3,11 +3,46 @@
 
 {% block content %}
 
-  {{ data }}
+  {% if transactions %}
 
-  {% for transaction in transactions %}:
-    <div class="row">{{ transaction }}</div>
-  {% endfor %}
+    <div class="container-fluid text-">
+    {% for transaction in transactions %}
+      <div class="col text-start text-bg-dark border">
+        <h3>
+        <a class="list-group-item ps-3" href="{% url 'finances:show_account' acc_url=transaction.account.slug %}">{{ transaction.account.name }}</a>
+        </h3>
+      </div>
+      <div class="col border border-2">
+
+        <div class="row row-cols-5 text-center">
+          <div class="col">Description</div>
+          <div class="col">Amount</div>
+          <div class="col">Date</div>
+          <div class="col">Category</div>
+          <div class="col">Remaining balance</div>
+        </div>
+        <hr>
+
+        <div class="col text-center ">
+
+
+            <div class="row row-cols-sm-5 ">
+              <div class="col text-center">{{ transaction.description }}</div>
+              <div class="col text-center">{{ transaction.amount }}</div>
+              <div class="col text-center">{{ transaction.date|date:"d E, Y H:i:s" }}</div>
+              <div class="col text-center">{{ transaction.category.name }}</div>
+              <div class="col text-center">{{ transaction.balance }}</div>
+            </div>
+              <hr>
+
+          </div>
+      </div>
+
+      {% endfor %}
+  {% else %}
+    <h1>Greetings! Create new account to control your finances!</h1>
+  {% endif %}
+</div>
 
 
 {% endblock %}

@@ -39,8 +39,8 @@ class Transaction(models.Model):
         verbose_name="Description"
     )
     date = models.DateTimeField(
-        default=datetime.now(),
-        verbose_name="Date"
+        default=datetime.now,
+        verbose_name="Date",
     )
     amount = models.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
@@ -120,8 +120,9 @@ class Account(models.Model):
         max_digits=constants.DECIMAL_MAX_DIGITS,
         decimal_places=constants.DECIMAL_PLACES,
         verbose_name="Remaining balance",
+        blank=True,
         default=0,
-        blank=True
+        null=False
     )
     slug = AutoSlugField(
         populate_from="name",
