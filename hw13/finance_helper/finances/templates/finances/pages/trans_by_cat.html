@@ -1,0 +1,49 @@
+{% extends 'finances/base.html' %}
+
+{% block content %}
+
+  {% if transactions %}
+
+    <div class="container-fluid text-">
+    {% for account, transactions in filled_accounts.items %}
+      <div class="col text-start text-bg-dark border">
+        <h3>
+        <a class="list-group-item ps-3" href="{% url 'finances:show_account' acc_url=account.slug %}">{{ account }}</a>
+        </h3>
+      </div>
+      <div class="col border border-2">
+
+        <div class="row row-cols-5 text-center">
+          <div class="col">Description</div>
+          <div class="col">Amount</div>
+          <div class="col">Date</div>
+          <div class="col">Category</div>
+          <div class="col">Remaining balance</div>
+        </div>
+        <hr>
+
+        <div class="col text-center ">
+
+            {% for transaction in transactions|slice:"5" %}
+              <div class="row row-cols-sm-5 ">
+                <div class="col text-center">{{ transaction.description }}</div>
+                <div class="col text-center">{{ transaction.amount }}</div>
+                <div class="col text-center">{{ transaction.date|date:"d E, Y H:i:s" }}</div>
+                <div class="col text-center">{{ transaction.category.name }}</div>
+                <div class="col text-center">{{ transaction.balance }}</div>
+              </div>
+              {% if transaction != transactions|last %}
+                <hr>
+              {% endif %}
+
+            {% endfor %}
+          </div>
+      </div>
+
+      {% endfor %}
+  {% else %}
+    <h1>Greetings! Create new account to control your finances!</h1>
+  {% endif %}
+</div>
+
+{% endblock %}
