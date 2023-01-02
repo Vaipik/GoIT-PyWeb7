@@ -3,7 +3,7 @@
 {% block content %}
 
     <div class="container-fluid text-">
-    {% for account, transactions in trans_by_acc.items %}
+    {% for account, transactions in page_obj %}
       <div class="col text-start text-bg-dark border">
         <h3>
         <a class="list-group-item ps-3" href="{% url 'finances:show_account' acc_url=account.slug %}">{{ account }}</a>

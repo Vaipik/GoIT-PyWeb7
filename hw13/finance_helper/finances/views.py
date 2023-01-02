@@ -1,11 +1,11 @@
 from django.db.models import QuerySet
 from django.shortcuts import render, redirect
-from django.core.paginator import Paginator
 
 from . import forms
 from . import models
-from .libs.ordering import order_by
+# from .libs.ordering import order_by
 from .libs.search_parser import parse_search_request
+from .libs.correlate_pagination import transactions_for_acc, transactions_for_cat, transactions_for_search
 
 
 def index(request):
@@ -16,25 +16,14 @@ def index(request):
         accounts = models.Account.objects.filter(user=user)
         transactions = models.Transaction.objects.prefetch_related("category", "account").filter(account__user=user)
 
-        paginator = Paginator(transactions, 3)
-        page_number = request.GET.get("page", 1)
-        page_obj = paginator.get_page(page_number)
-        pages = paginator.get_elided_page_range(
-            number=page_number,
-            on_each_side=1,
-            on_ends=1
+        page_obj, pages = transactions_for_acc(
+            request=request,
+            transactions=transactions,
         )
-
-        filled_accounts = {}
-        for transaction in transactions:
-            filled_accounts.setdefault(
-                transaction.account, []
-            ).append(transaction)
 
         context = {
             "accounts": accounts,
             "categories": {tr.category for tr in transactions},
-            "filled_accounts": filled_accounts,
             "page_obj": page_obj,
             "pages": pages
         }
@@ -104,18 +93,31 @@ def delete_account(request, acc_url: str):
 
 def show_account(request, acc_url):
     user = request.user
-    transactions = models.Transaction.objects.select_related("category").filter(account__slug=acc_url)
-    accounts = models.Account.objects.filter(user=user)
-    account = accounts.get(slug=acc_url)
+    transactions = models.Transaction.objects.prefetch_related("category").filter(account__user=user)
+    user_cats = models.Category.objects.filter(transaction__account__user=user)
 
-    order_by_key = request.GET.get("order_by")
-    ordered_data = order_by(order_by_key)
+    accounts = models.Account.objects.filter(user=user)
+    for account in accounts:
+        if account.slug == acc_url:
+            current_account = account
+
+    # For different ordering
+    # order_by_key = request.GET.get("order_by")
+    # ordered_data = order_by(order_by_key)
+
+    page_obj, pages = transactions_for_acc(
+        request=request,
+        transactions=transactions,
+        acc_url=acc_url
+    )
 
     context = {
-        "transactions": ordered_data(transactions),
-        "account": account,
+        "page_obj": page_obj,
+        "pages": pages,
+        "account": current_account,
+        "title": current_account.name,
         "accounts": accounts,
-        "categories": {tr.category for tr in transactions}
+        "categories": {category for category in user_cats}
     }
 
     return render(
@@ -211,16 +213,21 @@ def check_category(name: str):
 
 def show_transactions_by_category(request, cat_url):
     user = request.user
-    transactions = models.Transaction.objects.filter(account__user=user, category__slug=cat_url)
-    trans_by_acc = {}
-    for transaction in transactions:
-        trans_by_acc.setdefault(
-            transaction.account, []
-        ).append(transaction)
+    transactions = models.Transaction.objects.select_related("category").filter(account__user=user)
+    accounts = models.Account.objects.filter(user=user)
+    current_category, page_obj, pages = transactions_for_cat(
+        request=request,
+        transactions=transactions,
+        category_url=cat_url
+    )
 
     context = {
-        "title": transactions[0].category.name,
-        "trans_by_acc": trans_by_acc
+        "title": current_category.name,
+        "page_obj": page_obj,
+        "pages": pages,
+        "categories": {tr.category for tr in transactions},
+        "current_category": current_category,
+        "accounts": accounts
     }
     return render(request, "finances/pages/trans_by_cat.html", context)
 
@@ -229,7 +236,10 @@ def search(request):
     request_data = request.GET.get("search")
     words, numbers = parse_search_request(request_data)
     user = request.user
-    context = {}
+
+    user_cats = models.Category.objects.filter(transaction__account__user=user)
+    accounts = models.Account.objects.filter(user=user)
+
     transactions: QuerySet = models.Transaction.objects \
         .filter(account__user=user) \
         .select_related("category")
@@ -253,6 +263,18 @@ def search(request):
 
     for acc in matched_transactions:
         matched_transactions[acc] = list(matched_transactions.get(acc))  # convert set to list
-    context["trans_by_acc"] = matched_transactions
+
+    page_obj, pages = transactions_for_search(
+        request=request,
+        matched_transactions=matched_transactions
+    )
+
+    context = {
+        "page_obj": page_obj,
+        "pages": pages,
+        "title": "Search page",
+        "accounts": accounts,
+        "categories": {cat for cat in user_cats}
+    }
 
     return render(request, "finances/pages/search.html", context)

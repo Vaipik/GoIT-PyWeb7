@@ -2,9 +2,15 @@
   <ul class="list-unstyled">
     {% for category in categories %}
     <li class="my-2">
+      {% if category == current_category %}
+      <a href="{% url 'finances:show_transactions_by_category' cat_url=category.slug %}" class="btn d-inline-flex align-items-center collapsed border-0 disabled" aria-expanded="false" aria-controls="contents-collapse">
+        {{ category }}
+      </a>
+    {% else %}
       <a href="{% url 'finances:show_transactions_by_category' cat_url=category.slug %}" class="btn d-inline-flex align-items-center collapsed border-0" aria-expanded="false" aria-controls="contents-collapse">
         {{ category }}
       </a>
     </li>
+      {% endif %}
     {% endfor %}
   </ul>

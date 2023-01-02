@@ -3,10 +3,10 @@
 
 {% block content %}
 
-  {% if trans_by_acc %}
+  {% if page_obj %}
 
     <div class="container-fluid text-">
-    {% for account, transactions in trans_by_acc.items %}
+    {% for account, transactions in page_obj %}
       <div class="col text-start text-bg-dark border">
         <h3>
         <a class="list-group-item ps-3" href="{% url 'finances:show_account' acc_url=account.slug %}">{{ account }}</a>
@@ -43,7 +43,7 @@
 
       {% endfor %}
   {% else %}
-    <h1>Greetings! Create new account to control your finances!</h1>
+    <h3>No data has been found for your query.</h3>
   {% endif %}
 </div>
 
