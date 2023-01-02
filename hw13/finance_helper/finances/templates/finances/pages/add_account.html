@@ -4,7 +4,11 @@
 <h1>Creating new account</h1>
 <form action="{% url 'finances:add_account' %}" method="post">
   {% csrf_token %}
-  {{ form.as_p }}
+  {% for field in form %}
+    <div class="row row-cols-sm-3">
+      {{ field }}
+    </div>
+  {% endfor %}
   <input class="btn btn-primary" type="submit" value="Create new account">
 </form>
 {% endblock %}

@@ -25,7 +25,8 @@ def index(request):
             "accounts": accounts,
             "categories": {tr.category for tr in transactions},
             "page_obj": page_obj,
-            "pages": pages
+            "pages": pages,
+            "title": f"{user} accounts"
         }
 
     return render(
@@ -115,7 +116,7 @@ def show_account(request, acc_url):
         "page_obj": page_obj,
         "pages": pages,
         "account": current_account,
-        "title": current_account.name,
+        "title": f"Account - {current_account.name}",
         "accounts": accounts,
         "categories": {category for category in user_cats}
     }
@@ -222,7 +223,7 @@ def show_transactions_by_category(request, cat_url):
     )
 
     context = {
-        "title": current_category.name,
+        "title": f"Category- {current_category}",
         "page_obj": page_obj,
         "pages": pages,
         "categories": {tr.category for tr in transactions},

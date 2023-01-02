@@ -8,7 +8,12 @@ class AddTransactionForm(forms.Form):
     description = forms.CharField(
         max_length=constants.DESCRIPTION_MAX_LENGTH,
         min_length=constants.DESCRIPTION_MIN_LENGTH,
-        widget=forms.TextInput(attrs={"class": "form-control"})
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "label": "About transaction"
+            }
+        )
     )
     amount = forms.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
