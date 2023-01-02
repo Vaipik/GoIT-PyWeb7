@@ -1,5 +1,6 @@
 from django.db.models import QuerySet
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
 
 from . import forms
 from . import models
@@ -14,6 +15,16 @@ def index(request):
 
         accounts = models.Account.objects.filter(user=user)
         transactions = models.Transaction.objects.prefetch_related("category", "account").filter(account__user=user)
+
+        paginator = Paginator(transactions, 3)
+        page_number = request.GET.get("page", 1)
+        page_obj = paginator.get_page(page_number)
+        pages = paginator.get_elided_page_range(
+            number=page_number,
+            on_each_side=1,
+            on_ends=1
+        )
+
         filled_accounts = {}
         for transaction in transactions:
             filled_accounts.setdefault(
@@ -24,6 +35,8 @@ def index(request):
             "accounts": accounts,
             "categories": {tr.category for tr in transactions},
             "filled_accounts": filled_accounts,
+            "page_obj": page_obj,
+            "pages": pages
         }
 
     return render(

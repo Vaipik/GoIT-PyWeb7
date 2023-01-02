@@ -2,7 +2,7 @@
   <ul class="list-unstyled text-start">
     {% for account in accounts %}
     <li class="my-2">
-      <a href="{% url 'finances:show_account' acc_url=account.slug %}" class="btn d-inline-flex align-items-center collapsed border-0" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#contents-collapse" aria-controls="contents-collapse">
+      <a href="{% url 'finances:show_account' acc_url=account.slug %}" class="btn d-inline-flex align-items-center collapsed border-0" aria-expanded="false" aria-controls="contents-collapse">
         {{ account }}
       </a>
     </li>
