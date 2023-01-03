@@ -10,7 +10,7 @@ class AddTransactionForm(forms.Form):
         min_length=constants.DESCRIPTION_MIN_LENGTH,
         widget=forms.TextInput(
             attrs={
-                "class": "form-control",
+                "class": "form-control w-30 mt-3",
                 "label": "About transaction"
             }
         )
@@ -18,18 +18,15 @@ class AddTransactionForm(forms.Form):
     amount = forms.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
         decimal_places=constants.DECIMAL_PLACES,
-        widget=forms.NumberInput(attrs={"class": "form-control"})
+        widget=forms.NumberInput(attrs={"class": "form-control w-30 mt-3"})
     )
-    # class Meta:
-    #     model = models.Transaction
-    #     fields = ["description", "amount"]
 
 
 class EditTransactionForm(forms.ModelForm):
     description = forms.CharField(
         max_length=constants.DESCRIPTION_MAX_LENGTH,
         min_length=constants.DESCRIPTION_MIN_LENGTH,
-        widget=forms.TextInput(attrs={"class": "form-control"})
+        widget=forms.TextInput(attrs={"class": "form-control w-30 mt-3"})
     )
     amount = forms.DecimalField(
         max_digits=constants.DECIMAL_MAX_DIGITS,
@@ -50,7 +47,7 @@ class AccountForm(forms.ModelForm):
         max_length=constants.ACCOUNT_MAX_LENGTH,
         min_length=constants.ACCOUNT_MIN_LENGTH,
         label="Enter account name",
-        widget=forms.TextInput(attrs={"class": "form-control"})
+        widget=forms.TextInput(attrs={"class": "form-control w-30 mt-3 text"})
 
     )
 

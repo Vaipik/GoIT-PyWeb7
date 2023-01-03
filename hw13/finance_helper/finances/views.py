@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from . import forms
@@ -36,6 +37,7 @@ def index(request):
     )
 
 
+@login_required
 def add_account(request):
     user = request.user
     accounts = models.Account.objects.filter(user=user)
@@ -59,6 +61,7 @@ def add_account(request):
     return render(request, "finances/pages/add_account.html", context)
 
 
+@login_required
 def edit_account(request, acc_url: str):
     account = models.Account.objects.get(slug=acc_url)
 
@@ -86,12 +89,14 @@ def edit_account(request, acc_url: str):
     return render(request, "finances/pages/edit_account.html", context)
 
 
+@login_required
 def delete_account(request, acc_url: str):
     if request.method == "POST":
         models.Account.objects.get(slug=acc_url).delete()
         return redirect("finances:index")
 
 
+@login_required
 def show_account(request, acc_url):
     user = request.user
     transactions = models.Transaction.objects.prefetch_related("category").filter(account__user=user)
@@ -128,6 +133,7 @@ def show_account(request, acc_url):
     )
 
 
+@login_required
 def add_transaction(request, acc_url: str):
     user = request.user
     transactions = models.Transaction.objects.select_related("category").filter(account__slug=acc_url)
@@ -173,6 +179,7 @@ def add_transaction(request, acc_url: str):
     )
 
 
+@login_required
 def edit_transaction(request, acc_url: str, trans_url: str):
     transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
     form = forms.EditTransactionForm(instance=transaction)
@@ -202,16 +209,19 @@ def edit_transaction(request, acc_url: str, trans_url: str):
     return render(request, "finances/pages/edit_transaction.html", context)
 
 
+@login_required
 def delete_transaction(request, acc_url, trans_url):
     transaction: models.Transaction = models.Transaction.objects.get(slug=trans_url)
     transaction.delete()
     return redirect("finances:show_account", acc_url=acc_url)
 
 
+@login_required
 def check_category(name: str):
     return models.Category.objects.filter(name=name).first()
 
 
+@login_required
 def show_transactions_by_category(request, cat_url):
     user = request.user
     transactions = models.Transaction.objects.select_related("category").filter(account__user=user)
@@ -233,6 +243,7 @@ def show_transactions_by_category(request, cat_url):
     return render(request, "finances/pages/trans_by_cat.html", context)
 
 
+@login_required
 def search(request):
     request_data = request.GET.get("search")
     words, numbers = parse_search_request(request_data)

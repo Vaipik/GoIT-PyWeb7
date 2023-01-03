@@ -2,13 +2,21 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'new_users:login' %}" class="form">
+  <form method="post" action="{% url 'users:sign_in' %}">
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
     {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-        <button name="submit" class="btn btn-primary">log in</button>
-        <input type="hidden" name="next" value="{%url 'learning_logs:index' %}" />
-    {% endbuttons %}
-</form>
-
+    {% for field in form %}
+      <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+          <div class="form-floating">
+              {{ field }}
+              <label for={{ field.label }}>{{ field.label }}</label>
+            </div>
+        </div>
+        <div class="col-4"></div>
+      </div>
+    {% endfor %}
+    <button class="w-30 btn btn-lg btn-primary mt-3" type="submit">Sign in</button>
+  </form>
 {% endblock content %}

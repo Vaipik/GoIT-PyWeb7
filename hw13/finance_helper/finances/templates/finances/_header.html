@@ -8,7 +8,6 @@
       <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
       <li><a href="#" class="nav-link px-2 text-white">About</a></li>
       <li><a href="{% url 'finances:add_account' %}" class="nav-link px-2 text-white">New account</a></li>
-      <li><a href="#" class="nav-link px-2 text-white">About</a></li>
     </ul>
     {% if account.balance is not None%}
       <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
@@ -21,12 +20,12 @@
 
     <div class="text-end">
       {% if user.is_authenticated %}
-        <button type="button" class="btn btn-outline-light me-2">
+        <a href="{% url 'users:sign_out' %}" type="button" class="btn btn-outline-light me-2">
           Logout
-        </button>
+        </a>
       {% else %}
-        <button type="button" class="btn btn-outline-light me-2">Login</button>
-        <button type="button" class="btn btn-warning">Sign-up</button>
+        <a href="{% url 'users:sign_in' %}" type="button" class="btn btn-outline-light me-2">Login</a>
+        <a href="{% url 'users:sign_up' %}" type="button" class="btn btn-warning">Sign-up</a>
       {% endif %}
     </div>
   </div>
