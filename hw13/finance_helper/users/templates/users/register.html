@@ -4,22 +4,7 @@
 
   <form method="post" action="{% url 'users:sign_up' %}">
     <h1 class="h3 mb-3 fw-normal">Sign up to start use your helper</h1>
-    {% csrf_token %}
-    {% for field in form %}
-      <div class="row">
-        <div class="col-4"></div>
-        <div class="col-4">
-          <div class="form-floating">
-              {{ field }}
-              <label for={{ field.label }}>{{ field.label }}</label>
-              {% for error in field.errors %}
-                <p class="text-danger">{{ error }}</p>
-              {% endfor %}
-            </div>
-        </div>
-        <div class="col-4"></div>
-      </div>
-    {% endfor %}
-    <button class="w-30 btn btn-lg btn-primary mt-3" type="submit">Sign up</button>
+      {% include 'users/_auth.html' %}
+    <button class="btn btn-lg btn-dark mt-3" type="submit">Sign up</button>
   </form>
 {% endblock content %}

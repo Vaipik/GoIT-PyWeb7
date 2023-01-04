@@ -2,12 +2,11 @@
 
 {% block content %}
 
-  <h1>Adding new transaction!!!</h1>
+    <h1 class="h3 mb-3 fw-normal">Adding new transaction to your <b>{{ account.name }}</b> account</h1>
 <form action="{% url 'finances:add_transaction' acc_url=account.slug %}" method="post">
- {% include "finances/pages/_adding_transaction.html" %}
-  <div>
-  <input type="submit" class="btn btn-primary" value="Add new transaction">
-  </div>
+ {% include "finances/pages/_transaction.html" %}
+
+  <button class="btn btn-lg btn-dark mt-3" type="submit">Add transaction</button>
 </form>
 
 {% endblock %}

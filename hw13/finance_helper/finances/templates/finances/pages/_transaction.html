@@ -1,0 +1,18 @@
+{% include 'finances/_form.html' %}
+
+<div class="row">
+  <div class="col-4"></div>
+  <div class="col-4">
+    <div class="form-floating">
+      <input class="form-control mt-3" list="items" placeholder="Type to search or write your category" name="categories" value="{{ transaction.category }}">
+        <datalist id="items">
+          {% for category in categories %}
+            <option value="{{ category }}">
+          {% endfor %}
+        </datalist>
+        <label for="categories">Choose or write your own</label>
+      </div>
+    </div>
+  <div class="col-4"></div>
+</div>
+

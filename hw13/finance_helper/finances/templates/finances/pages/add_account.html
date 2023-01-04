@@ -1,14 +1,11 @@
 {% extends 'finances/base.html' %}
 
 {% block content %}
-<h1>Creating new account</h1>
-<form action="{% url 'finances:add_account' %}" method="post">
-  {% csrf_token %}
-  {% for field in form %}
-    <div class="row row-cols-sm-3">
-      {{ field }}
-    </div>
-  {% endfor %}
-  <input class="btn btn-primary" type="submit" value="Create new account">
-</form>
+
+  <form method="post" action="{% url 'finances:add_account' %}">
+    <h1 class="h3 mb-3 fw-normal">Creating new account</h1>
+      {% include "finances/_form.html" %}
+    <button class="btn btn-lg btn-dark mt-3" type="submit">Create new account</button>
+  </form>
+
 {% endblock %}

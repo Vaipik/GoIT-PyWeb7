@@ -1,10 +1,10 @@
 {% extends 'finances/base.html' %}
 
 {% block content %}
-<h1>Editing account</h1>
+    <h1 class="h3 mb-3 fw-normal">Editing name of your <b>{{ account.name }}</b>  </h1>
 <form action="{% url 'finances:edit_account' acc_url=account.slug %}" method="post">
-  {% csrf_token %}
-  {{ form.name }}
-  <input class="btn btn-primary" type="submit" value="Edit account">
+
+  {% include "finances/_form.html" %}
+  <button class="btn btn-lg btn-primary mt-3" type="submit">Save changes</button>
 </form>
 {% endblock %}

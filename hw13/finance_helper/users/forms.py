@@ -13,6 +13,8 @@ class RegistrationForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control mt-3",
+                "id": "username",
+                "placeholder": "username",
             }
         )
     )
@@ -25,6 +27,7 @@ class RegistrationForm(UserCreationForm):
             attrs={
                 "class": "form-control mt-3",
                 "placeholder": "123456789Aa!1",
+                "id": "password1"
             }
         )
     )
@@ -37,6 +40,7 @@ class RegistrationForm(UserCreationForm):
             attrs={
                 "class": "form-control mt-3",
                 "placeholder": "123456789Aa!1",
+                "id": "password2"
             }
         )
     )
@@ -54,6 +58,7 @@ class LoginForm(AuthenticationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control mt-3",
+                "placeholder": "username"
             }
         )
     )

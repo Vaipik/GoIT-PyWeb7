@@ -2,13 +2,11 @@
 
 {% block content %}
 
-  <h1>Editing transaction!!!</h1>
-<form action="{% url 'finances:edit_transaction' acc_url=acc_url trans_url=transaction.slug %}" method="post">
- {% include "finances/pages/_adding_transaction.html" %}
+      <h1 class="h3 mb-3 fw-normal">Editing {{ transaction.description }} in your {{ transaction.account.name }} account</h1>
+<form action="{% url 'finances:edit_transaction' acc_url=account.slug trans_url=transaction.slug %}" method="post">
+ {% include "finances/pages/_transaction.html" %}
+  <button class="btn btn-lg btn-dark mt-3" type="submit">Save changes</button>
 
-  <div>
-  <input type="submit" class="btn btn-primary" value="Edit current transaction">
-  </div>
 </form>
 
 {% endblock %}

@@ -33,7 +33,7 @@ def sign_in(request):
 @decorators.login_required
 def sign_out(request):
     logout(request)
-    return redirect(to="noteapp:main")
+    return redirect("finances:index")
 
 
 def sign_up(request):

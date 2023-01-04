@@ -22,7 +22,7 @@
     {% include "finances/_header.html" %}
   </header>
 <main class="vh-100 w-100 m-auto">
-<div class="container-fluid">
+<div class="containerprimary-fluid">
   <div class="row">
     <div class="col-sm-2 vh-100 text-center border border-5">
       {% include 'finances/_sidebar_left.html' %}
@@ -40,7 +40,7 @@
 </div>
 
   {% block pagination %}
-    <div class="container-fluid align-content-center mt-3">
+    <div class="container-fluid align-content-center">
   <ul class="pagination text-center d-lg-flex justify-content-center">
 
     {% if page_obj.has_previous %}
@@ -65,8 +65,9 @@
   </ul>
 </div>
   {% endblock %}
+
 </main>
-  <footer class="container-fluid align-content-center text-warning bg-dark">
+  <footer class="container-fluid align-content-center text-warning bg-dark mt-5">
     {% include "finances/_footer.html" %}
   </footer>
 

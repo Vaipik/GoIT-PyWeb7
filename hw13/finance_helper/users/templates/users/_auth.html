@@ -1,0 +1,16 @@
+{% csrf_token %}
+{% for field in form %}
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <div class="form-floating">
+        {{ field }}
+        <label for="{{ field.label }}">{{ field.label }}</label>
+        {% for error in field.errors %}
+          <p class="mt-3 text-danger">{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-4"></div>
+  </div>
+{% endfor %}
