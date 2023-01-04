@@ -53,4 +53,9 @@ Project contains from two applications:
     It means that each user can handle <b>ONLY</b> with his data.
 </ol>
 
-Requirement to this project:
+Requirements to this project:
+* python = ^3.10
+* django = ^4.1.4
+* django-autoslug = ^1.9.8  -> autoslug field for django orm 
+* psycopg2 = ^2.9.5  -> connector to postgresql db
+* pytils = ^0.4.1  -> to proper django-autoslug work with cyrillic symbols.
