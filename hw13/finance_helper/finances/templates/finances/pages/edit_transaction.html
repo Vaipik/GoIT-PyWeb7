@@ -6,6 +6,7 @@
 <form action="{% url 'finances:edit_transaction' acc_url=account.slug trans_url=transaction.slug %}" method="post">
  {% include "finances/pages/_transaction.html" %}
   <button class="btn btn-lg btn-dark mt-3" type="submit">Save changes</button>
+  <a href="{% url 'finances:show_account' acc_url=account.slug %}" class="btn btn-lg btn-dark mt-3">Go back</a>
 
 </form>
 

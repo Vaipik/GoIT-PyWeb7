@@ -104,9 +104,13 @@ def edit_account(request, acc_url: str):
 
 @login_required
 def delete_account(request, acc_url: str):
+
     if request.method == "POST":
         models.Account.objects.get(slug=acc_url).delete()
-        return redirect("finances:index")
+
+    return redirect("finances:index")
+
+
 
 
 @login_required
