@@ -59,3 +59,8 @@ Requirements to this project:
 * django-autoslug = ^1.9.8  -> autoslug field for django orm 
 * psycopg2 = ^2.9.5  -> connector to postgresql db
 * pytils = ^0.4.1  -> to proper django-autoslug work with cyrillic symbols.
+
+
+TODO
+
+**rewrite by using class-based-views**
