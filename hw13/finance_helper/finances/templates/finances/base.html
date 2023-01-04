@@ -22,12 +22,13 @@
     {% include "finances/_header.html" %}
   </header>
 <main class="vh-100 w-100 m-auto">
+
 <div class="container-fluid">
   <div class="row row-cols-3">
     <div class="col-2 vh-100 text-center border border-5">
       {% include 'finances/_sidebar_left.html' %}
     </div>
-    <div class="col-8 text-center mt-3">
+    <div class="col-8 vh-100 text-center mt-3">
       {% block content %}
       {% endblock %}
     </div>
