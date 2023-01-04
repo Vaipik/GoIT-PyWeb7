@@ -26,6 +26,7 @@ def transactions_for_acc(*, request, transactions, acc_url: str = None) -> tuple
         transactions = [transaction for transaction in transactions if transaction.account.slug == acc_url]
         paginator = Paginator(transactions, 5)
     page_number = request.GET.get("page", 1)
+    print(page_number)
     page_obj = paginator.get_page(page_number)
     pages = paginator.get_elided_page_range(
         number=page_number,

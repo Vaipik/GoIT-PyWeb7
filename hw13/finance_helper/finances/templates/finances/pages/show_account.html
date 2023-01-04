@@ -5,23 +5,23 @@
     <form>
       <div class="row row-cols-6 text-center mt-3">
         <div class="col">
-          <input class="btn btn-dark disabled" type="submit" value="Description" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Description" name="order_by">
         </div>
 
         <div>
-          <input class="btn btn-dark disabled " type="submit" value="Amount" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Amount" name="order_by">
         </div>
 
         <div class="col">
-          <input class="btn btn-dark disabled" type="submit" value="Date" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Date" name="order_by">
         </div>
 
         <div class="col">
-          <input class="btn btn-dark disabled" type="submit" value="Category" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Category" name="order_by">
         </div>
 
         <div class="col">
-          <input class="btn btn-dark disabled" type="submit" value="Remaining balance" name="order_by">
+          <input class="btn btn-dark" type="submit" value="Remaining balance" name="order_by">
         </div>
 
       </div>
@@ -56,3 +56,54 @@
 
 {% endblock %}
 
+  {% block pagination %}
+    {% if order_by %}
+    <div class="container-fluid align-content-center">
+  <ul class="pagination text-center d-lg-flex justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?order_by={{ order_by }}&page={{ page_obj.previous_page_number }}">Previous</a>
+      </li>
+    {% endif %}
+
+    {% for page in pages %}
+
+      <li class="page-item">
+        {% if page == page_obj.number %}
+         <a class="page-link disabled" href="?order_by={{ order_by }}&page={{ page }}">{{ page }}</a>
+        {% else %}
+          <a class="page-link" href="?order_by={{ order_by }}&page={{ page }}">{{ page }}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?order_by={{ order_by }}&page={{ page_obj.next_page_number }}">Next</a></li>
+    {% endif %}
+  </ul>
+</div>
+    {% else %}
+          <div class="container-fluid align-content-center">
+  <ul class="pagination text-center d-lg-flex justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      </li>
+    {% endif %}
+
+    {% for page in pages %}
+
+      <li class="page-item">
+        {% if page == page_obj.number %}
+         <a class="page-link disabled" href="?page={{ page }}">{{ page }}</a>
+        {% else %}
+          <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    {% endif %}
+  </ul>
+</div>
+    {% endif %}
+  {% endblock %}

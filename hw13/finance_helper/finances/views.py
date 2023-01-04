@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from . import forms
 from . import models
-# from .libs.ordering import order_by
+from .libs.ordering import order_by
 from .libs.search_parser import parse_search_request
 from .libs.correlate_pagination import transactions_for_acc, transactions_for_cat, transactions_for_search
 
@@ -108,13 +108,13 @@ def show_account(request, acc_url):
             current_account = account
 
     # For different ordering
-    # order_by_key = request.GET.get("order_by")
-    # ordered_data = order_by(order_by_key)
+    order_by_key = request.GET.get("order_by")
+    ordered_data = order_by(order_by_key)
 
     page_obj, pages = transactions_for_acc(
         request=request,
-        transactions=transactions,
-        acc_url=acc_url
+        transactions=ordered_data(transactions),
+        acc_url=acc_url,
     )
 
     context = {
@@ -123,7 +123,8 @@ def show_account(request, acc_url):
         "account": current_account,
         "title": f"Account - {current_account.name}",
         "accounts": accounts,
-        "categories": {category for category in user_cats}
+        "categories": {category for category in user_cats},
+        "order_by": order_by_key,
     }
 
     return render(
