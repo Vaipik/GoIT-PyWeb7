@@ -37,6 +37,19 @@ def index(request):
     )
 
 
+def about(request):
+    user = request.user
+    context = {"title": "About website"}
+    if user.is_authenticated:
+        accounts = models.Account.objects.filter(user=user)
+        transactions = models.Transaction.objects.prefetch_related("category", "account").filter(account__user=user)
+
+        context["accounts"] = accounts
+        context["categories"] = {tr.category for tr in transactions}
+
+    return render(request, "finances/pages/about.html", context)
+
+
 @login_required
 def add_account(request):
     user = request.user

@@ -1,5 +1,7 @@
+{% if user.is_authenticated %}
 <h2 class="h6 pt-4 pb-3 mb-4 border-bottom">Your categories</h2>
   <ul class="list-unstyled text-start">
+  {% if categories %}
     {% for category in categories %}
     <li class="my-2">
       {% if category == current_category %}
@@ -13,4 +15,12 @@
     </li>
       {% endif %}
     {% endfor %}
+  {% else %}
+          <a class="btn d-inline-flex align-items-center collapsed border-0 disabled" aria-expanded="false" aria-controls="contents-collapse">
+          You do not have any transaction
+      </a>
+  {% endif %}
   </ul>
+{% else %}
+<h2 class="h6 pt-4 pb-3 mb-4 border-bottom">Your categories will be above</h2>
+{% endif %}

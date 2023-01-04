@@ -7,6 +7,7 @@ app_name = "finances"
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("about/", views.about, name="about"),
     path("add_account/", views.add_account, name="add_account"),  # Done
     path("delete_account/", views.delete_account, name="delete_account"),  # Done
     path("edit_account/<slug:acc_url>", views.edit_account, name="edit_account"),
