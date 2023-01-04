@@ -246,6 +246,7 @@ def show_transactions_by_category(request, cat_url):
 @login_required
 def search(request):
     request_data = request.GET.get("search")
+    print(request_data)
     words, numbers = parse_search_request(request_data)
     user = request.user
 
@@ -286,7 +287,8 @@ def search(request):
         "pages": pages,
         "title": "Search page",
         "accounts": accounts,
-        "categories": {cat for cat in user_cats}
+        "categories": {cat for cat in user_cats},
+        "request_data": request_data
     }
 
     return render(request, "finances/pages/search.html", context)

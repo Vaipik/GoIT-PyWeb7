@@ -71,7 +71,7 @@ def transactions_for_search(*, request, matched_transactions: dict) -> tuple[Any
     :param matched_transactions: dictionary with matched transactions for your view
     :return: page object for iterating over one page, pages
     """
-    paginator = Paginator(list(matched_transactions.items()), 5)
+    paginator = Paginator(list(matched_transactions.items()), 3)
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
     pages = paginator.get_elided_page_range(
@@ -79,5 +79,6 @@ def transactions_for_search(*, request, matched_transactions: dict) -> tuple[Any
         on_each_side=1,
         on_ends=1
     )
-
+    print(page_obj)
+    print(matched_transactions)
     return page_obj, pages
