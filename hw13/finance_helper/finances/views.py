@@ -111,8 +111,6 @@ def delete_account(request, acc_url: str):
     return redirect("finances:index")
 
 
-
-
 @login_required
 def show_account(request, acc_url):
     user = request.user
@@ -157,6 +155,7 @@ def add_transaction(request, acc_url: str):
     transactions = models.Transaction.objects.select_related("category").filter(account__slug=acc_url)
     accounts = models.Account.objects.filter(user=user)
     account = accounts.get(slug=acc_url)
+    form = forms.AddTransactionForm()
 
     if request.method == "POST":
         form = forms.AddTransactionForm(request.POST)
@@ -164,15 +163,17 @@ def add_transaction(request, acc_url: str):
             description = form.cleaned_data["description"]
             amount = form.cleaned_data["amount"]
 
-            category = request.POST.get("category")
+            category = request.POST.get("categories")
+            print(category)
             category = "No category" if not category else category
             checked_category = check_category(category)
+            print(checked_category)
             if checked_category is None:
                 category = models.Category(name=category)
                 category.save()
             else:
                 category = checked_category
-
+            print(category)
             category.transaction_set.create(
                 description=description,
                 amount=amount,
@@ -180,8 +181,6 @@ def add_transaction(request, acc_url: str):
             )
 
             return redirect("finances:show_account", acc_url=acc_url)
-
-    form = forms.AddTransactionForm()
 
     context = {
         "form": form,
@@ -234,7 +233,6 @@ def delete_transaction(request, acc_url, trans_url):
     return redirect("finances:show_account", acc_url=acc_url)
 
 
-@login_required
 def check_category(name: str):
     return models.Category.objects.filter(name=name).first()
 
