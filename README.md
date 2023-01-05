@@ -11,5 +11,7 @@
     <li>CLI helper from PythonCore-7 final project with storing data in DB by using SQLAlchemy and Alembic</li> 
     <li>CLI helper from PythonCore-7 final project with storing data in MongoDB</li>
     <li>CLI helper from PythonCore-7 final project performed by using Flask</li> 
-    <li>Currency checker by using PB24 and MonoBank APIs. Performed by aiohttp</li> 
+    <li>Currency checker by using PB24 and MonoBank APIs. Performed by aiohttp</li>
+    <li>Finance assistant performed by using django framework</li>
+    <li>Web parser, performed by using requests and bs4</li> 
 </ol>
