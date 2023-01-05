@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse
 
 from autoslug import AutoSlugField
 
@@ -141,5 +142,5 @@ class Account(models.Model):
     def __str__(self):
         return self.name
 
-
-
+    def get_absolute_url(self):
+        return reverse("finances:show_account", kwargs={"acc_url": self.slug})

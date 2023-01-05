@@ -1,56 +1,31 @@
-from django.http import HttpResponse
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, decorators
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
-from .forms import RegistrationForm, LoginForm
+from . import forms
 
 
-def sign_in(request):
-    user = request.user
-    form = LoginForm()
+class SignInView(LoginView):
+    form_class = forms.LoginForm
+    template_name = "users/login.html"
+    extra_context = {"title": "Authorization page"}
 
-    if user.is_authenticated:
-        return redirect("finances:index")
+    def get_success_url(self):
+        return reverse_lazy("finances:index")
 
-    if request.method == "POST":
-        user = authenticate(
-            username=request.POST.get("username"),
-            password=request.POST.get("password")
-        )
-        if user is None:
-            return redirect("users:sign_in")
 
-        login(request, user)
-        return redirect("finances:index")
+class SignUpView(CreateView):
+    template_name = "users/register.html"
+    form_class = forms.RegistrationForm
+    extra_context = {"title": "Registration page"}
 
-    context = {
-        "form": form,
-    }
-
-    return render(request, "users/login.html", context)
+    def get_success_url(self):
+        return reverse_lazy("finances:index")
 
 
 @decorators.login_required
 def sign_out(request):
     logout(request)
     return redirect("finances:index")
-
-
-def sign_up(request):
-    form = RegistrationForm()
-
-    if request.user.is_authenticated:
-        return redirect("finances:index")
-
-    if request.method == "POST":
-        form = RegistrationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            return redirect("users:sign_in")
-
-    context = {
-        "form": form,
-        "title": "Registration page",
-    }
-    return render(request, "users/register.html", context)

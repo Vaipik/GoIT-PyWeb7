@@ -1,19 +1,59 @@
-from django.db.models import QuerySet
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.views.generic import TemplateView, CreateView, ListView
 
 from . import forms
 from . import models
+from .utils import UserDataMixin
 from .libs.ordering import order_by
 from .libs.search_parser import parse_search_request
 from .libs.correlate_pagination import transactions_for_acc, transactions_for_cat, transactions_for_search
+
+
+class HomePageView(ListView):
+    template_name = "finances/pages/index.html"
+
+
+class ShowAccountView(ListView):
+    template_name = "finances/pages/show_account.html"
+    slug_url_kwarg = "acc_url"
+
+    # def get_c
+
+
+class AccountCreateView(UserDataMixin, LoginRequiredMixin, CreateView):
+    model = models.Account
+    form_class = forms.AccountForm
+    template_name = "finances/pages/add_account.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            self.get_user_data(title="New account creation")  # updating context
+        )
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class AboutPageView(UserDataMixin, TemplateView):
+    template_name = "finances/pages/about.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            self.get_user_data(title="About website")  # updating context
+        )
+        return context
 
 
 def index(request):
     user = request.user
     context = {}
     if user.is_authenticated:
-
         accounts = models.Account.objects.filter(user=user)
         transactions = models.Transaction.objects.prefetch_related("category", "account").filter(account__user=user)
 
@@ -37,17 +77,6 @@ def index(request):
     )
 
 
-def about(request):
-    user = request.user
-    context = {"title": "About website"}
-    if user.is_authenticated:
-        accounts = models.Account.objects.filter(user=user)
-        transactions = models.Transaction.objects.prefetch_related("category", "account").filter(account__user=user)
-
-        context["accounts"] = accounts
-        context["categories"] = {tr.category for tr in transactions}
-
-    return render(request, "finances/pages/about.html", context)
 
 
 @login_required
@@ -104,7 +133,6 @@ def edit_account(request, acc_url: str):
 
 @login_required
 def delete_account(request, acc_url: str):
-
     if request.method == "POST":
         models.Account.objects.get(slug=acc_url).delete()
 
@@ -219,7 +247,8 @@ def edit_transaction(request, acc_url: str, trans_url: str):
     context = {
         "transaction": transaction,
         "form": form,
-        "categories": {tr.category for tr in transactions},
+        # "categories": {tr.category for tr in transactions},
+        "categories": models.Category.objects.filter(transaction__account__user=user).distinct("name"),
         "account": account,
         "accounts": accounts
     }
@@ -269,7 +298,7 @@ def search(request):
     user_cats = models.Category.objects.filter(transaction__account__user=user)
     accounts = models.Account.objects.filter(user=user)
 
-    transactions: QuerySet = models.Transaction.objects \
+    transactions = models.Transaction.objects \
         .filter(account__user=user) \
         .select_related("category")
     # Dictionary with account as key and set of matched transactions as value
