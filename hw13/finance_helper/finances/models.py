@@ -1,7 +1,6 @@
-from datetime import datetime
-
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from autoslug import AutoSlugField
 
@@ -39,7 +38,7 @@ class Transaction(models.Model):
         verbose_name="Description"
     )
     date = models.DateTimeField(
-        default=datetime.now,
+        default=timezone.now,
         verbose_name="Date",
     )
     amount = models.DecimalField(
