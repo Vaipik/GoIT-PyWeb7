@@ -1,4 +1,3 @@
-
 <div class="container-fluid">
 
   <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -7,13 +6,15 @@
       <li><a href="{% url 'finances:index' %}" class="btn btn-outline-info">Home</a></li>
       <li><a href="{% url 'finances:about' %}" class="btn btn-outline-info ms-2 me-5">About</a></li>
       {% if user.is_authenticated %}
-      <li><a href="{% url 'finances:add_account' %}" class="btn btn-outline-success">New account</a></li>
+        <li><a href="{% url 'finances:add_account' %}" class="btn btn-outline-success">New account</a></li>
         {% if account %}
           <div class="ms-3 col-6 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-            <a href="{% url 'finances:edit_account' acc_url=account.slug %}" class="btn btn-outline-warning">Edit account</a>
+            <a href="{% url 'finances:edit_account' acc_url=account.slug %}" class="btn btn-outline-warning">Edit
+              account</a>
           </div>
 
-          <form method="post" action="{% url 'finances:delete_account' acc_url=account.slug %}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+          <form method="post" action="{% url 'finances:delete_account' acc_url=account.slug %}"
+                class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
             {% csrf_token %}
             <button class="btn btn-outline-danger" type="submit">Delete account</button>
           </form>
@@ -22,11 +23,12 @@
     </ul>
     {% if account.balance is not None %}
       <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-      <button type="button" class="btn btn-warning">Balance: {{ account.balance }} UAH</button>
+        <button type="button" class="btn btn-warning">Balance: {{ account.balance }} UAH</button>
       </div>
     {% endif %}
     <form action="{% url 'finances:search' %}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-      <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" name="search">
+      <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..."
+             aria-label="Search" name="search">
     </form>
 
     <div class="text-end">

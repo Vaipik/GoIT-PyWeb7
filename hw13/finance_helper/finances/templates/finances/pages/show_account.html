@@ -31,7 +31,7 @@
       <div class="row row-cols-sm-6">
         <div class="col text-center mx-auto ">
           <a class="text-decoration-none btn btn-outline-dark btn-sm"
-             href="{% url 'finances:edit_transaction' acc_url=account.slug trans_url=transaction.slug %}">
+             href="{% url 'finances:edit_transaction' acc_url=transaction.account.slug trans_url=transaction.slug %}">
             {{ transaction.description }}
           </a>
         </div>

@@ -35,7 +35,6 @@ class Transaction(models.Model):
     description = models.CharField(
         max_length=constants.DESCRIPTION_MAX_LENGTH,
         blank=True,
-        null=True,
         verbose_name="Description"
     )
     date = models.DateTimeField(
@@ -52,7 +51,6 @@ class Transaction(models.Model):
         decimal_places=constants.DECIMAL_PLACES,
         verbose_name="Remaining balance",
         blank=True,
-        null=True,
     )
     is_costs = models.BooleanField(
         verbose_name="Costs"

@@ -31,31 +31,7 @@ class AddTransactionForm(forms.Form):
     )
 
 
-class EditTransactionForm(forms.ModelForm):
-    description = forms.CharField(
-        max_length=constants.DESCRIPTION_MAX_LENGTH,
-        min_length=constants.DESCRIPTION_MIN_LENGTH,
-        label="Enter description",
-        widget=forms.TextInput(
-            attrs={
-                "class": "form-control mt-3",
-                "placeholder": "movie tickets",
-                "id": "description"
-            }
-        )
-    )
-    amount = forms.DecimalField(
-        max_digits=constants.DECIMAL_MAX_DIGITS,
-        decimal_places=constants.DECIMAL_PLACES,
-        label="Enter amount",
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control mt-3",
-                "placeholder": "100.00",
-                "id": "amount"
-            }
-        )
-    )
+class EditTransactionForm(AddTransactionForm):
     date = forms.DateTimeField(
         widget=forms.DateTimeInput(
             attrs={
@@ -63,10 +39,6 @@ class EditTransactionForm(forms.ModelForm):
                    }
         )
     )
-
-    class Meta:
-        model = models.Transaction
-        fields = ["description", "amount", "date"]
 
 
 class AccountForm(forms.ModelForm):

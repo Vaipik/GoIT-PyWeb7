@@ -1,5 +1,4 @@
 from . import models
-from .libs.correlate_pagination import transactions_for_acc
 
 
 class UserDataMixin:
@@ -9,18 +8,21 @@ class UserDataMixin:
     def get_user_data(self, **kwargs):
         context = kwargs
         user = self.request.user
-        accounts = models.Account.objects.filter(user=user)
-        categories = models.Category.objects.filter(transaction__account__user=user)
-        context["accounts"] = accounts
-        context["categories"] = categories
+        if user.is_authenticated:
+
+            accounts = models.Account.objects.filter(user=user)
+            categories = models.Category.objects.filter(transaction__account__user=user).distinct("name")
+            context["accounts"] = accounts
+            context["categories"] = categories
+
+        page = context.get("page_obj")
+
+        if page is not None:
+            pages = page.paginator.get_elided_page_range(
+                number=page.number,
+                on_each_side=1,
+                on_ends=1
+            )
+            context["pages"] = pages
 
         return context
-
-    def get_filled_user_acc(self, **kwargs):
-        context = kwargs
-        user = self.request.user
-        transactions = models.Transaction.objects.select_related("user").filter(account__user=user)
-        context["transactions"] = transactions
-
-        return context
-
