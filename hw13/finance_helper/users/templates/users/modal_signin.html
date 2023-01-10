@@ -1,0 +1,35 @@
+<div class="modal fade" id="login_ajax" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="alert alert-warning d-none" role="alert">
+      </div>
+
+      <form method="POST" action="{% url 'users:sign_in_ajax' %}" id="login">
+        <div class="modal-body">
+          {% csrf_token %}
+          {% for field in login_ajax %}
+            <div class="row">
+              <div class="col">
+                <div class="form-floating text-center">
+                  {{ field }}
+                  <label for="{{ field.name }}">{{ field.label }}</label>
+                  {% for error in field.errors %}
+                    <p class="mt-3 text-danger">{{ error }}</p>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Sign in</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

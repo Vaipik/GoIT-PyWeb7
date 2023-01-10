@@ -30,6 +30,11 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def get_default_pk(cls):
+        obj, created = cls.objects.get_or_create(name="No category")
+        return obj.pk
+
 
 class Transaction(models.Model):
     description = models.CharField(
@@ -51,6 +56,7 @@ class Transaction(models.Model):
         decimal_places=constants.DECIMAL_PLACES,
         verbose_name="Remaining balance",
         blank=True,
+        null=True
     )
     is_costs = models.BooleanField(
         verbose_name="Costs"
@@ -62,8 +68,8 @@ class Transaction(models.Model):
     )
     category = models.ForeignKey(
         to="Category",
-        on_delete=models.SET_NULL,
-        null=True
+        on_delete=models.SET_DEFAULT,
+        default=Category.get_default_pk
     )
     account = models.ForeignKey(
         to="Account",

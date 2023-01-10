@@ -156,16 +156,11 @@ class TransactionCreateView(ContextMixin, UserDataMixin, LoginRequiredMixin, Vie
 
             category = request.POST.get("categories")
             category = "No category" if not category else category
-            checked_category = check_category(category)
-            if checked_category is None:
-                category = models.Category(name=category)
-                category.save()
-            else:
-                category = checked_category
+            category, created = models.Category.objects.get_or_create(name=category)
             category.transaction_set.create(
                 description=description,
                 amount=amount,
-                account=context["account"]
+                account=context["account"],
             )
 
             return redirect("finances:show_account", acc_url=self.kwargs["acc_url"])
@@ -316,12 +311,3 @@ class SearchPageView(UserDataMixin, ListView):
                 words.append(item)
 
         return words, numbers
-
-
-def check_category(name: str) -> models.Category | None:
-    """
-    Each category has unique url thus this function checks is cat existing or not.
-    :param name: category name
-    :return: Category instance if it exists or None.
-    """
-    return models.Category.objects.filter(name=name).first()

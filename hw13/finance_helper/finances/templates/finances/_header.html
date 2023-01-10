@@ -19,6 +19,7 @@
             <button class="btn btn-outline-danger" type="submit">Delete account</button>
           </form>
         {% endif %}
+
       {% endif %}
     </ul>
     {% if account.balance is not None %}
@@ -37,7 +38,10 @@
           Logout
         </a>
       {% else %}
-        <a href="{% url 'users:sign_in' %}" type="button" class="btn btn-outline-light me-2">Login</a>
+        <a href="#" type="button" class="btn btn-outline-light me-2"
+           data-bs-toggle="modal" data-bs-target="#login_ajax">
+          Login
+        </a>
         <a href="{% url 'users:sign_up' %}" type="button" class="btn btn-warning">Sign-up</a>
       {% endif %}
     </div>
