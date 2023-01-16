@@ -2,9 +2,14 @@ from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status, HTTPException
+from sqlalchemy.orm import Session
 
-from api.schemas.articles import ArticleBase, ArticleResponse
+from api.dependecies import get_db
 from api.models.articles import Article
+from api.repositories.articles import ArticleRepository
+from api.schemas.articles import ArticleBase, ArticleResponse
+
+
 router = APIRouter(
     prefix="/articles",
     tags=["articles"]
@@ -12,14 +17,14 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[ArticleResponse])
-def get_all_articles():
-    articles = Article.objects.all()
+def get_all_articles(db: Session = Depends(get_db)):
+    articles = ArticleRepository.get_all_articles(db)
     return articles
 
 
 @router.get("/{uuid}", response_model=ArticleResponse)
-def get_article(uuid: UUID):
-    article = Article.objects.filter_by(uuid=uuid).first()
+def get_article(uuid: UUID, db: Session = Depends(get_db)):
+    article = ArticleRepository.get_article(uuid=uuid, db=db)
     if article is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
