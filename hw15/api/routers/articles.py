@@ -37,18 +37,19 @@ def create_article(article: ArticleBase, db: Session = Depends(get_db)):
     }
 )
 def delete_article(uuid: UUID, db: Session = Depends(get_db)):
-    deleted_article = ArticleRepository.delete_article(
-        uuid=uuid,
-        db=db
-    )
-    if deleted_article is None:
+    article_to_delete = ArticleRepository.get_article(uuid=uuid, db=db)
+    if article_to_delete is None:
         return JSONResponse(
             content={
                 "uuid": str(uuid),
             },
             status_code=status.HTTP_404_NOT_FOUND
         )
-    return deleted_article
+    ArticleRepository.delete_article(
+        article=article_to_delete,
+        db=db
+    )
+    return article_to_delete
 
 
 @router.get(
@@ -95,9 +96,8 @@ def get_article(uuid: UUID, db: Session = Depends(get_db)):
     }
 )
 def update_article(uuid: UUID, article: ArticleUpdate, db: Session = Depends(get_db)):
-    article = ArticleRepository.update_article(
+    article_to_update = ArticleRepository.get_article(
         uuid=uuid,
-        request_body=article,
         db=db
     )
     if article is None:
@@ -107,4 +107,9 @@ def update_article(uuid: UUID, article: ArticleUpdate, db: Session = Depends(get
             },
             status_code=status.HTTP_404_NOT_FOUND,
         )
-    return article
+    updated_article = ArticleRepository.update_article(
+        article=article_to_update,
+        request_body=article,
+        db=db
+    )
+    return updated_article

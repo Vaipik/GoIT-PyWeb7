@@ -25,18 +25,15 @@ class ArticleRepository:
         return new_article
 
     @staticmethod
-    def delete_article(*, uuid: UUID, db: Session) -> Union[Article, None]:
+    def delete_article(*, article: Article, db: Session) -> None:
         """
         Delete existing article by uuid if it exists
-        :param uuid: universaly unique identifier
+        :param article: article instance
         :param db: session instance
         :return: Article if it exists or None
         """
-        article = ArticleRepository.get_article(uuid=uuid, db=db)
-        if article is not None:
-            db.delete(article)
-            db.commit()
-        return article
+        db.delete(article)
+        db.commit()
 
     @staticmethod
     def get_all_articles(db: Session) -> Union[List[Article], None]:
@@ -59,18 +56,14 @@ class ArticleRepository:
         return db.query(Article).filter_by(uuid=uuid).first()
 
     @staticmethod
-    def update_article(*, uuid: UUID, request_body: ArticleUpdate, db: Session) -> Union[Article, None]:
+    def update_article(*, article: Article, request_body: ArticleUpdate, db: Session) -> Union[Article, None]:
         """
-        Updating article if it exists
-        :param uuid: universally unique identifier.
+        Updating article
+        :param article: instance of article.
         :param request_body: body parameters which will update article fields
         :param db: session instance
         :return: Updated article or None if no article
         """
-        article = ArticleRepository.get_article(uuid=uuid, db=db)
-        if article is None:
-            return article
-
         request_data = request_body.dict()
         for field in request_data:
             value = request_data[field]

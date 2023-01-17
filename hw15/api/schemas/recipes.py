@@ -1,6 +1,11 @@
 from pydantic import BaseModel, Field
 
 
-class Recipe:
+class Recipe(BaseModel):
     title: str
-    # text: str = Field
+    text: str
+
+    class Config:
+        example = {
+            "title"
+        }
