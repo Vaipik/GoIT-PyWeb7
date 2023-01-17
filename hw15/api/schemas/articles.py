@@ -23,3 +23,14 @@ class ArticleResponse(ArticleBase):
 
     class Config:
         orm_mode = True
+
+
+# Error schemas
+
+class Articles404(BaseModel):
+    message: str = "No articles were found"
+
+
+class Article404(BaseModel):
+    uuid: UUID
+    message = "Article with given uuid was not found"
