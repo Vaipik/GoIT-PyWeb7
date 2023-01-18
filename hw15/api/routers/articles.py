@@ -1,12 +1,14 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from api.dependecies import get_db
+from api.libs import oath2
 from api.repositories.articles import ArticleRepository
+from api.models.users import User
 from api.schemas.articles import ArticleBase, ArticleResponse, ArticleUpdate, Article404, Articles404
 
 
@@ -21,7 +23,12 @@ router = APIRouter(
     response_model=ArticleResponse,
     status_code=status.HTTP_201_CREATED
 )
-def create_article(article: ArticleBase, db: Session = Depends(get_db)):
+def create_article(
+        article: ArticleBase,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(oath2.get_current_user)
+):
+    print(current_user)
     new_article = ArticleRepository.create_article(
         request_body=article,
         db=db
