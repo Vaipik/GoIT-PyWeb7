@@ -28,7 +28,7 @@ class ArticleResponse(ArticleBase):
 # Error schemas
 
 class Articles404(BaseModel):
-    message: str = "No articles were found"
+    message: str
 
 
 class Article404(BaseModel):

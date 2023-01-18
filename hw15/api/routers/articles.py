@@ -63,7 +63,7 @@ def get_all_articles(db: Session = Depends(get_db)):
     articles = ArticleRepository.get_all_articles(db)
     if articles is None:
         return JSONResponse(
-            content={"mesage": "No articles were found"},
+            content={"message": "No articles were found"},
             status_code=status.HTTP_404_NOT_FOUND
         )
     return articles
