@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from api.routers import articles, users
+from api.routers import articles, users, auth
 
 
 app = FastAPI(
@@ -10,6 +10,7 @@ app = FastAPI(
 )
 
 
+app.include_router(auth.router)
 app.include_router(articles.router)
 # app.include_router(currencies.router)
 app.include_router(users.router)
