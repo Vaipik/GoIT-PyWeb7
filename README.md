@@ -14,4 +14,5 @@
     <li>Currency checker by using PB24 and MonoBank APIs. Performed by aiohttp</li>
     <li>Finance assistant performed by using django framework</li>
     <li>Web parser, performed by using requests and bs4</li> 
+    <li>RESTApi by using FastAPI framework</li>
 </ol>
