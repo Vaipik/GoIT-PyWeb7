@@ -17,6 +17,12 @@ python-multipart = "^0.0.5"
 python-dotenv = "^0.21.0"
 
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+pytest-cov = "^4.0.0"
+pytest-sugar = "^0.9.6"
+httpx = "^0.23.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
