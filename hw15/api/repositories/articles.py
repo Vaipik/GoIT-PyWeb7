@@ -5,20 +5,22 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from api.models.articles import Article
+from api.models.users import User
 from api.schemas.articles import ArticleBase, ArticleUpdate
 
 
 class ArticleRepository:
 
     @staticmethod
-    def create_article(*, request_body: ArticleBase, db: Session) -> Article:
+    def create_article(*, request_body: ArticleBase, owner: User, db: Session) -> Article:
         """
         Creating new article, returns created instance
         :param request_body: body parameters according to json schema
+        :param owner: creator of the article
         :param db: session instance
         :return: Created article instance
         """
-        new_article = Article(**request_body.dict())
+        new_article = Article(**request_body.dict(), owner=owner)
         db.add(new_article)
         db.commit()
         db.refresh(new_article)  # Now it contains all attrs from created model
@@ -74,3 +76,14 @@ class ArticleRepository:
         db.commit()
 
         return article
+
+    @staticmethod
+    def check_owner(*, article: Article, current_user: User) -> bool:
+        """
+        Checking if current user is owner of given article.
+        :param article: article instance which should be checked
+        :param current_user: probable owner of article
+        :return: True if user is owner, False if user is not owner
+        """
+
+        return article.owner == current_user

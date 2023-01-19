@@ -9,7 +9,7 @@ from api.dependecies import get_db
 from api.libs import oath2
 from api.repositories.articles import ArticleRepository
 from api.models.users import User
-from api.schemas.articles import ArticleBase, ArticleResponse, ArticleUpdate, Article404, Articles404
+from api.schemas.articles import ArticleBase, ArticleResponse, ArticleUpdate, Article404, ArticleCommonError
 
 
 router = APIRouter(
@@ -28,9 +28,9 @@ def create_article(
         db: Session = Depends(get_db),
         current_user: User = Depends(oath2.get_current_user)
 ):
-    print(current_user)
     new_article = ArticleRepository.create_article(
         request_body=article,
+        owner=current_user,
         db=db
     )
     return new_article
@@ -40,10 +40,14 @@ def create_article(
     path="/{uuid}",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
-        status.HTTP_404_NOT_FOUND: {"model": Article404}
+        status.HTTP_404_NOT_FOUND: {"model": Article404},
+        status.HTTP_401_UNAUTHORIZED: {"model": ArticleCommonError}
     }
 )
-def delete_article(uuid: UUID, db: Session = Depends(get_db)):
+def delete_article(
+        uuid: UUID,
+        current_user: User = Depends(oath2.get_current_user),
+        db: Session = Depends(get_db)):
     article_to_delete = ArticleRepository.get_article(uuid=uuid, db=db)
     if article_to_delete is None:
         return JSONResponse(
@@ -51,6 +55,13 @@ def delete_article(uuid: UUID, db: Session = Depends(get_db)):
                 "uuid": str(uuid),
             },
             status_code=status.HTTP_404_NOT_FOUND
+        )
+    if not ArticleRepository.check_owner(article=article_to_delete, current_user=current_user):
+        return JSONResponse(
+            content={
+                "message": "You have no access to delete this article",
+            },
+            status_code=status.HTTP_401_NOT_FOUND
         )
     ArticleRepository.delete_article(
         article=article_to_delete,
@@ -63,7 +74,7 @@ def delete_article(uuid: UUID, db: Session = Depends(get_db)):
     path="/",
     response_model=List[ArticleResponse],
     responses={
-        status.HTTP_404_NOT_FOUND: {"model": Articles404}
+        status.HTTP_404_NOT_FOUND: {"model": ArticleCommonError}
     }
 )
 def get_all_articles(db: Session = Depends(get_db)):
@@ -99,10 +110,16 @@ def get_article(uuid: UUID, db: Session = Depends(get_db)):
     path="/{uuid}",
     response_model=ArticleResponse,
     responses={
-        status.HTTP_404_NOT_FOUND: {"model": Article404}
+        status.HTTP_404_NOT_FOUND: {"model": Article404},
+        status.HTTP_401_UNAUTHORIZED: {"model": ArticleCommonError}
     }
 )
-def update_article(uuid: UUID, article: ArticleUpdate, db: Session = Depends(get_db)):
+def update_article(
+        uuid: UUID,
+        article: ArticleUpdate,
+        current_user: User = Depends(oath2.get_current_user),
+        db: Session = Depends(get_db)
+):
     article_to_update = ArticleRepository.get_article(
         uuid=uuid,
         db=db
@@ -113,6 +130,13 @@ def update_article(uuid: UUID, article: ArticleUpdate, db: Session = Depends(get
                 "uuid": str(uuid),
             },
             status_code=status.HTTP_404_NOT_FOUND,
+        )
+    if not ArticleRepository.check_owner(article=article_to_update, current_user=current_user):
+        return JSONResponse(
+            content={
+                "message": "You have no access to delete this article"
+            },
+            status_code=status.HTTP_401_UNAUTHORIZED
         )
     updated_article = ArticleRepository.update_article(
         article=article_to_update,

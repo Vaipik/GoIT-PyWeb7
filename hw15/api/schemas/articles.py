@@ -27,7 +27,7 @@ class ArticleResponse(ArticleBase):
 
 # Error schemas
 
-class Articles404(BaseModel):
+class ArticleCommonError(BaseModel):
     message: str
 
 

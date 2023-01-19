@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from sqlalchemy import Column, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
+from sqlalchemy.orm import relationship
 
 from api.database.base_class import Base
 from api.libs import constants
@@ -15,3 +16,4 @@ class User(Base):
     hashed_password = Column(String(constants.HASHPASSWORD_MAX_LENGTH), nullable=False)
     is_active = Column(Boolean, default=True)
     last_logged = Column(TIMESTAMP, nullable=True, default=None)
+    article = relationship("Article", back_populates="owner")

@@ -1,6 +1,0 @@
-postgres:
-  db_url: postgresql+psycopg2://postgres:root@localhost:5432/fastapi_hw
-auth:
-  secret_key: a10356efc186ebf91258395397d72e081c3db34c770aa252eafb6e273f6b8d40
-  algorithm: HS256
-  expire_token: 30
