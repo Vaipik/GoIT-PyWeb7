@@ -14,6 +14,8 @@ Postgres is used as the database. User are able to do following things:
     * edit existing article.
     * delete existing article.
 
+`black` was used to format code
+
 ### Visit `/doc` or `/redoc` to see how to operate with this api
 
 ## Steps how to start project
@@ -28,3 +30,7 @@ Postgres is used as the database. User are able to do following things:
    * EXPIRE_TOKEN=`expire token time`
 5. And finally run `app.py` and visit `/doc` to see further information
 
+## Tests coverage 97%
+1. Add to `.env` following row:
+    * TEST_DB_URL=`your connection url to test db`
+2. Run `pytest tests  --cov` when you are in `api/` folder
