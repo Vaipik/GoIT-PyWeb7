@@ -21,7 +21,10 @@ router = APIRouter(
 @router.post(
     path="/",
     response_model=ArticleResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {"model": ArticleCommonError}
+    }
 )
 def create_article(
         article: ArticleBase,
@@ -100,6 +103,7 @@ def get_article(uuid: UUID, db: Session = Depends(get_db)):
         return JSONResponse(
             content={
                 "uuid": str(uuid),
+                "message": "Article with given uuid was not found"
             },
             status_code=status.HTTP_404_NOT_FOUND,
         )
@@ -124,7 +128,7 @@ def update_article(
         uuid=uuid,
         db=db
     )
-    if article is None:
+    if article_to_update is None:
         return JSONResponse(
             content={
                 "uuid": str(uuid),

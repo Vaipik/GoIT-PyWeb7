@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Union
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, status
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
@@ -42,20 +43,25 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     :param db: session instance
     :return: user if jwt is valid or raise 401 exception if credentials is not valid
     """
-    credentials_exception = HTTPException(
+    credentials_exception = JSONResponse(
+        content={
+            "message": "Could not validate credentials"
+        },
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
         payload = jwt.decode(token, app_config["SECRET_KEY"], algorithms=app_config["ALGORITHM"])
         username: str = payload.get("sub")  # extacting subject from encrypted data
         if username is None:
-            raise credentials_exception
+            # return credentials_exception
+            return
         token_data = TokenData(username=username)
     except JWTError:
-        raise credentials_exception
+        return
+        # return credentials_exception
     user = UserRepository.get_user(username=token_data.username, db=db)
     if user is None:
-        raise credentials_exception
+        return
+        # return credentials_exception
     return user
