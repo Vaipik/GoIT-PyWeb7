@@ -25,27 +25,18 @@ def test_get_article_404(client: TestClient):
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {
         "uuid": str(_uuid),
-        "message": "Article with given uuid was not found"
+        "message": "Article with given uuid was not found",
     }
 
 
 def test_post_article_401(client: TestClient):
-    response = client.post(
-        articles_url, json={
-            "title": "no matter",
-            "text": "matter"
-        }
-    )
+    response = client.post(articles_url, json={"title": "no matter", "text": "matter"})
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json() == {"detail": "Not authenticated"}
 
 
 def test_put_article_401(client: TestClient):
-    response = client.put(
-       f"{articles_url}/asd", json={
-            "no matter": "no matter"
-        }
-    )
+    response = client.put(f"{articles_url}/asd", json={"no matter": "no matter"})
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json() == {"detail": "Not authenticated"}
 
@@ -64,7 +55,7 @@ def test_post_article_201(client: TestClient, headers):
             "title": "How to create api?",
             "text": "Some article text",
         },
-        headers=headers
+        headers=headers,
     )
     articles.update(response.json())
     assert response.status_code == status.HTTP_201_CREATED
@@ -85,9 +76,7 @@ def test_get_article_before_put_200(client: TestClient):
 def test_put_article_422(client: TestClient, headers):
     _uuid = articles["uuid"]
     response = client.put(
-        f"{articles_url}/{_uuid}4",
-        json={"addd": "add"},
-        headers=headers
+        f"{articles_url}/{_uuid}4", json={"addd": "add"}, headers=headers
     )
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -95,9 +84,7 @@ def test_put_article_422(client: TestClient, headers):
 def test_put_article_404(client: TestClient, headers):
     _uuid = uuid4()
     response = client.put(
-        f"{articles_url}/{_uuid}",
-        json={"addd": "add"},
-        headers=headers
+        f"{articles_url}/{_uuid}", json={"addd": "add"}, headers=headers
     )
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -105,9 +92,7 @@ def test_put_article_404(client: TestClient, headers):
 def test_put_article_200(client: TestClient, headers):
     _uuid = articles["uuid"]
     response = client.put(
-        f"{articles_url}/{_uuid}",
-        json={"title": "add"},
-        headers=headers
+        f"{articles_url}/{_uuid}", json={"title": "add"}, headers=headers
     )
     response_json = response.json()
     assert response.status_code == status.HTTP_200_OK
@@ -120,26 +105,17 @@ def test_put_article_200(client: TestClient, headers):
 
 def test_delete_article_422(client: TestClient, headers):
     _uuid = uuid4()
-    response = client.delete(
-        f"{articles_url}/{_uuid}4",
-        headers=headers
-    )
+    response = client.delete(f"{articles_url}/{_uuid}4", headers=headers)
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 def test_delete_article_404(client: TestClient, headers):
     _uuid = uuid4()
-    response = client.delete(
-        f"{articles_url}/{_uuid}",
-        headers=headers
-    )
+    response = client.delete(f"{articles_url}/{_uuid}", headers=headers)
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_delete_article_204(client: TestClient, headers):
     _uuid = articles["uuid"]
-    response = client.delete(
-        f"{articles_url}/{_uuid}",
-        headers=headers
-    )
+    response = client.delete(f"{articles_url}/{_uuid}", headers=headers)
     assert response.status_code == status.HTTP_204_NO_CONTENT

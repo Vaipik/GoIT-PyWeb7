@@ -18,5 +18,10 @@ class Article(Base):
     text = Column(TEXT)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     edited_at = Column(TIMESTAMP, default=None)
-    user = Column(UUID(as_uuid=True), ForeignKey("users.uuid", ondelete="SET NULL"), nullable=True, default=None)
+    user = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.uuid", ondelete="SET NULL"),
+        nullable=True,
+        default=None,
+    )
     owner = relationship(User, back_populates="article")

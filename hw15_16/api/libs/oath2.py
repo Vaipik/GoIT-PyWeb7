@@ -17,7 +17,9 @@ from api.repositories.users import UserRepository
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
+def create_access_token(
+    data: dict, expires_delta: Union[timedelta, None] = None
+) -> str:
     """
     Creating acces token by encoding data by using secret key and encoding algorithm.
     :param data: data which must be encoded
@@ -28,15 +30,17 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(
-            minutes=int(app_config["EXPIRE_TOKEN"])
-        )
+        expire = datetime.utcnow() + timedelta(minutes=int(app_config["EXPIRE_TOKEN"]))
     to_encode.update({"exp": expire})  # updating expire time for token
-    encoded_jwt = jwt.encode(to_encode, app_config["SECRET_KEY"], algorithm=app_config["ALGORITHM"])
+    encoded_jwt = jwt.encode(
+        to_encode, app_config["SECRET_KEY"], algorithm=app_config["ALGORITHM"]
+    )
     return encoded_jwt
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+) -> User:
     """
     Authenticating user by jwt token.
     :param token: jwt token
@@ -44,14 +48,14 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     :return: user if jwt is valid or raise 401 exception if credentials is not valid
     """
     credentials_exception = JSONResponse(
-        content={
-            "message": "Could not validate credentials"
-        },
+        content={"message": "Could not validate credentials"},
         status_code=status.HTTP_401_UNAUTHORIZED,
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, app_config["SECRET_KEY"], algorithms=app_config["ALGORITHM"])
+        payload = jwt.decode(
+            token, app_config["SECRET_KEY"], algorithms=app_config["ALGORITHM"]
+        )
         username: str = payload.get("sub")  # extacting subject from encrypted data
         if username is None:
             # return credentials_exception

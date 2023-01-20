@@ -10,4 +10,3 @@ class Currency(BaseModel):
     rate_sell: float
     rate_buy: float
     timestamp: Union[str, None]
-    

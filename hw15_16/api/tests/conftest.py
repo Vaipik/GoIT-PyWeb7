@@ -38,11 +38,8 @@ def client() -> Generator:
 
 @pytest.fixture(scope="module")
 def headers(client: TestClient):
-    user_credentials = {
-        "username": "test",
-        "password": "testpassword"
-    }
-    created_user = client.post("/users", json=user_credentials)
+    user_credentials = {"username": "test", "password": "testpassword"}
+    client.post("/users", json=user_credentials)
     response = client.post("/token", data=user_credentials).json()
     auth_token = response["access_token"]
     headers = {"Authorization": f"Bearer {auth_token}"}

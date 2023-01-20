@@ -8,12 +8,16 @@ from pydantic import BaseModel, Field
 
 class ArticleBase(BaseModel):
     title: str = Field(example="How to create api ?")
-    text: str = Field(example="Here must be article text, but it can be very large so...")
+    text: str = Field(
+        example="Here must be article text, but it can be very large so..."
+    )
 
 
 class ArticleUpdate(BaseModel):
     title: Optional[str] = Field(example="How to create api ?")
-    text: Optional[str] = Field(example="Here must be article text, but it can be very large so...")
+    text: Optional[str] = Field(
+        example="Here must be article text, but it can be very large so..."
+    )
 
 
 class ArticleResponse(ArticleBase):
@@ -26,6 +30,7 @@ class ArticleResponse(ArticleBase):
 
 
 # Error schemas
+
 
 class ArticleCommonError(BaseModel):
     message: str

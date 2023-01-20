@@ -10,9 +10,10 @@ from api.schemas.articles import ArticleBase, ArticleUpdate
 
 
 class ArticleRepository:
-
     @staticmethod
-    def create_article(*, request_body: ArticleBase, owner: User, db: Session) -> Article:
+    def create_article(
+        *, request_body: ArticleBase, owner: User, db: Session
+    ) -> Article:
         """
         Creating new article, returns created instance
         :param request_body: body parameters according to json schema
@@ -58,7 +59,9 @@ class ArticleRepository:
         return db.query(Article).filter_by(uuid=uuid).first()
 
     @staticmethod
-    def update_article(*, article: Article, request_body: ArticleUpdate, db: Session) -> Union[Article, None]:
+    def update_article(
+        *, article: Article, request_body: ArticleUpdate, db: Session
+    ) -> Union[Article, None]:
         """
         Updating article
         :param article: instance of article.
@@ -70,7 +73,9 @@ class ArticleRepository:
         for field in request_data:
             value = request_data[field]
             if value is not None:
-                setattr(article, field, value)  # updating field if it was given in request
+                setattr(
+                    article, field, value
+                )  # updating field if it was given in request
 
         article.edited_at = datetime.utcnow()  # updating edited time
         db.commit()

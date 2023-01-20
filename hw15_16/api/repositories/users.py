@@ -9,7 +9,6 @@ from ..libs.hash import Hash
 
 
 class UserRepository:
-
     @staticmethod
     def get_user(*, username: str, db: Session) -> Union[User, None]:
         """
@@ -29,10 +28,7 @@ class UserRepository:
         :return: created user instance.
         """
         username, password = user.username, user.password
-        user = User(
-            username=username,
-            hashed_password=Hash.get_password_hash(password)
-        )
+        user = User(username=username, hashed_password=Hash.get_password_hash(password))
         db.add(user)
         db.commit()
         db.refresh(user)  # Update attributes from db
